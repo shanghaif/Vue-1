@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <script text="test/javascript" src="vue.js"></script>
+	<title>Document</title>
+
+	<script text="test/javascript">
+		
+		// document.ready -- 无效,为什么?
+	   // document.ready = function () {
+    //         alert('ready');
+    //     };
+
+	   // window.onload = function () {
+    //         alert('onload');
+    //     };
+
+	</script>
+</head>
+<body>
+
+	<input type="button" style="background: red; width:100px; height: 200px" name="testButton" id="" onclick="window.alert('1234567')">
+
+    <strong>strong mark</strong>
+    <em>em mark</em>
+    <i>i mark</i>
+    <big>big mark</big>
+    <small>small mark</small>
+    <sup>sup mark</sup>
+    <sub>sub mark</sub>
+    <ins>ins mark</ins>
+
+	<!-- <script src="vue.js"></script> -->
+	<script>
+		var vue = new Vue({
+ 
+            el: 'body',
+            data: {
+                myData: {},
+            },
+            // vue2.0中一个vue实例的生命周期中已经不存在ready()了,转换为mounted。
+            mounted: function () {
+                //这里是vue初始化完成后执行的函数
+                this.test();
+                console.log('vue ready')
+            },
+            methods: {
+                //这里是自定义的方法
+                test: function () {
+                    alert('test');
+                }
+            }
+ 
+        });
+	
+	</script>
+	
+</body>
+</html>

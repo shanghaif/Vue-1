@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    </head>
+
+    <body>
+        <div id="div_shown">
+            <div>
+                <!-- <h3>122222</h3> -->
+                <parent></parent>
+                <template001></template001>
+            </div>
+        </div>
+
+        <template id="template_link">
+            <div >
+                <h3>app  template</h3>
+            <p>
+                <router-link to="/home">Home</router-link>
+                <router-link to="/about">About</router-link>
+            </p>
+            <!-- //分割线 -->
+            <hr>
+            <!-- //路由router的视图 -->
+            <router-view></router-view> 
+            </div>
+        </template>
+
+
+        <template id="home">
+            <h1>
+                我是home
+            </h1>
+        </template>
+
+        <template id="about">
+            <h1>
+                我是about
+            </h1>
+        </template>
+
+        <script type="text/javascript">
+            //声明使用路由
+            Vue.use(VueRouter); 
+
+            // 从html文件里根据id读取<template>标签中的内容，并以此作为模板
+            // var App = Vue.extend({
+            //     template: "<div id=\"App\"><h3>app  template</h3><p><router-link to=\"/home\">Home</router-link><router-link to=\"/about\">About</router-link></p><hr><router-view></router-view></div>",
+            // });
+            var template_Link = {
+                template: "#template_link"
+            };
+            
+            var home = {
+                template: "#home"
+            };
+            var about = {
+                template: "#about"
+            };
+
+            var Child = {
+                template:"<div>子集的模版</div>"
+            };
+            var Parent ={
+                template:"<div>父集的模版<my-component></my-component></div>",
+                components:{   //将子集的组件注册到父集
+                    'my-component': Child  //注册到父集之后就直接使用my-component这个模版吗？
+                }
+            };
+            
+            //创建路由
+            var router = new VueRouter({
+                routes:[
+                    {path:'/home',component:home},
+                    {path:'/about',component:about}
+                ]
+            });
+            
+            const app = new Vue({
+                router: router,
+                components: {
+                    'parent': Parent,
+                    'template001': template_Link
+                },
+                // 这是Vue 2.0新增的函数，可以直接给绑定节点渲染一个vue组件
+                // h作为createElement的别名
+                // render: (h) => h(App)
+            }).$mount('#div_shown'); 
+
+        </script>
+    </body>
+</html>
