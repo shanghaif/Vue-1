@@ -1,0 +1,51 @@
+<!-- https://vuex.vuejs.org/guide/state.html -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>state_02</title>
+	<link rel="stylesheet" href="">
+	<script src="https://unpkg.com/vuex@3.0.1/dist/vuex.js"></script>
+	<script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+
+<script>
+const store = new Vuex.Store({
+    state: {
+        count: 10
+    }
+})
+
+// let's create a Counter component
+// Whenever store.state.count changes, it will cause the computed property to re-evaluate, and trigger associated DOM updates.
+const Counter = {
+    template: `<div>{{ count }}</div>`,
+    computed: {
+        count() {
+            // this pattern causes the component to rely on the global store singleton. When using a module system, it requires importing the store in every component that uses store state, and also requires mocking when testing the component.
+            return store.state.count
+            // Vuex provides a mechanism to "inject" the store into all child components from the root component with the store option (enabled by Vue.use(Vuex))  
+            return this.$store.state.count // 配合在Vue实例里添加store元素
+        }
+    }
+}
+
+const app = new Vue({
+    el: '#app',
+    // provide the store using the "store" option.
+    // this will inject the store instance to all child components.
+    store,
+    components: { Counter },
+    template: `
+    	<div>
+      		<counter></counter>
+    	</div>
+  		`
+})
+</script>
+
+</body>
+</html>
