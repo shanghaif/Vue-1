@@ -29,7 +29,7 @@
         }
       },
       created() {
-        this.redirectToIndex();
+        // this.redirectToIndex();
       },
       mounted() {
       },

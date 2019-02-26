@@ -90,7 +90,7 @@
       beforeCreate() {
       },
       created() {
-        this.redirectToIndex();
+        // this.redirectToIndex();
       },
       mounted() {
         this.$common.getToken(this.$store.state.recordNo).then(val => {
