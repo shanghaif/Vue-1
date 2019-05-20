@@ -1,0 +1,171 @@
+<template>
+  <div class="content-box smoking">
+    <h4>您一周会有几天吃新鲜蔬菜？</h4>
+    <ul class="drinkingSelect">
+      <li v-bind:class="{active: WeeklyVegetables == 7}" v-on:click="selectList(1,7)">5天以上</li>
+      <li v-bind:class="{active: WeeklyVegetables == 4}" v-on:click="selectList(1,4)">3-5天</li>
+      <li v-bind:class="{active: WeeklyVegetables == 1}" v-on:click="selectList(1,1)">2天以下</li>
+    </ul>
+
+    <h4>每天大概吃多少？(1碟蔬菜约150g)</h4>
+    <ul class="drinkingSelect">
+      <li v-bind:class="{active: DailyVegetables == '5'}" v-on:click="selectList(2,'5')">&lt;2碟</li>
+      <li v-bind:class="{active: DailyVegetables == '7'}" v-on:click="selectList(2,'7')">2-3碟</li>
+      <li v-bind:class="{active: DailyVegetables == '10'}" v-on:click="selectList(2,'10')">>3碟</li>
+    </ul>
+
+    <h4>您一周会有几天吃新鲜水果？</h4>
+    <ul class="drinkingSelect">
+      <li v-bind:class="{active: WeeklyFruit == 7}" v-on:click="selectList(3,7)">5天以上</li>
+      <li v-bind:class="{active: WeeklyFruit == 4}" v-on:click="selectList(3,4)">3-5天</li>
+      <li v-bind:class="{active: WeeklyFruit == 1}" v-on:click="selectList(3,1)">2天以下</li>
+    </ul>
+
+    <h4>每天大概吃多少？（1个苹果约200g）</h4>
+    <ul class="drinkingSelect">
+      <li v-bind:class="{active: DailyFruit == '1'}" v-on:click="selectList(4,'1')">&lt;1个</li>
+      <li v-bind:class="{active: DailyFruit == '3'}" v-on:click="selectList(4,'3')">1-2个</li>
+      <li v-bind:class="{active: DailyFruit == '5'}" v-on:click="selectList(4,'5')">>2个</li>
+    </ul>
+
+    <h4>您一周会有几天吃禽/瘦肉？</h4>
+    <ul class="drinkingSelect">
+      <li v-bind:class="{active: WeeklyMeat == 7}" v-on:click="selectList(5,7)">5天以上</li>
+      <li v-bind:class="{active: WeeklyMeat == 4}" v-on:click="selectList(5,4)">3-5天</li>
+      <li v-bind:class="{active: WeeklyMeat == 1}" v-on:click="selectList(5,1)">2天以下</li>
+    </ul>
+
+    <h4>每天大概吃多少?（1碟荤菜约100g）</h4>
+    <ul class="drinkingSelect">
+      <li v-bind:class="{active: DailyMeat == '0.9'}" v-on:click="selectList(6,'0.9')">&lt;1/2碟</li>
+      <li v-bind:class="{active: DailyMeat == '1.2'}" v-on:click="selectList(6,'1.2')">1/2-3/4碟</li>
+      <li v-bind:class="{active: DailyMeat == '1.6'}" v-on:click="selectList(6,'1.6')">>3/4碟</li>
+    </ul>
+
+    <h4>每天食盐摄入量？(1啤酒盖盐约6克)</h4>
+    <ul class="drinkingSelect">
+      <li v-bind:class="{active: DailySalt == '2'}" v-on:click="selectList(7,'2')">&lt;1/2瓶盖</li>
+      <li v-bind:class="{active: DailySalt == '4'}" v-on:click="selectList(7,'4')">1/2-1瓶盖</li>
+      <li v-bind:class="{active: DailySalt == '7'}" v-on:click="selectList(7,'7')">>1瓶盖</li>
+    </ul>
+
+
+    <input type="submit" class="common-btn" value="保存" v-on:click="setPersonEatHabit" />
+
+  </div>
+</template>
+
+<script>
+  import globalMixin from "../mixins/global";
+    export default {
+      name: "EatingHabits",
+      mixins: [globalMixin],
+      data() {
+        return {
+          LifeStyleID: null,
+          WeeklyVegetables: null,
+          DailyVegetables: null,
+          WeeklyFruit: null,
+          DailyFruit: null,
+          WeeklyMeat: null,
+          DailyMeat: null,
+          DailySalt: null
+        }
+      },
+      computed: {
+      },
+      watch: {
+      },
+      beforeCreate() {
+      },
+      created() {
+      },
+      mounted() {
+        this.getPersonEatHabit().then(()=> {
+          this.selectList();
+        });
+      },
+      methods: {
+        selectList(x,i) {
+          switch (x) {
+            case 1:
+              this.WeeklyVegetables = i;
+              break;
+            case 2:
+              this.DailyVegetables = i;
+              break;
+            case 3:
+              this.WeeklyFruit = i;
+              break;
+            case 4:
+              this.DailyFruit = i;
+              break;
+            case 5:
+              this.WeeklyMeat = i;
+              break;
+            case 6:
+              this.DailyMeat = i;
+              break;
+            case 7:
+              this.DailySalt = i;
+              break;
+          }
+        },
+
+        //获取饮食数据
+        getPersonEatHabit() {
+          let that = this;
+          return that.$fetch(that.$common.getMobileUrl(that.$api.GetPersonEatHabitApi))
+            .then(function(res){
+              if (res.IsSuccess === true) {
+                let getData = res.ReturnData;
+                that.WeeklyVegetables = getData.WeeklyVegetables;
+                that.DailyVegetables = getData.DailyVegetables;
+                that.WeeklyFruit = getData.WeeklyFruit;
+                that.DailyFruit = getData.DailyFruit;
+                that.WeeklyMeat = getData.WeeklyMeat;
+                that.DailyMeat = getData.DailyMeat;
+                that.DailySalt = getData.DailySalt;
+                that.LifeStyleID = getData.LifeStyleID;
+              }
+            })
+            .catch(function(error){
+              console.log(error);
+              that.errorDialogeShow(error);
+            });
+        },
+
+        //提交饮食数据
+        setPersonEatHabit() {
+          let that = this;
+          let upData = {
+            LifeStyleID: that.LifeStyleID,
+            WeeklyVegetables: that.WeeklyVegetables,
+            DailyVegetables: that.DailyVegetables,
+            WeeklyFruit: that.WeeklyFruit,
+            DailyFruit: that.DailyFruit,
+            DailyMeat: that.DailyMeat,
+            DailySalt: that.DailySalt,
+            WeeklyMeat:that.WeeklyMeat
+          };
+
+          that.$fetch(that.$common.getMobileUrl(that.$api.SavePersonEatHabitApi), { method: 'POST', body: JSON.stringify(upData)})
+            .then(function(res){
+              if (res.IsSuccess === true) {
+                that.errorDialogeShow("保存成功");
+              }
+            })
+            .catch(function(error){
+              console.log(error);
+              that.errorDialogeShow(error);
+            });
+        },
+
+
+      }
+    }
+</script>
+
+<style scoped>
+
+</style>
