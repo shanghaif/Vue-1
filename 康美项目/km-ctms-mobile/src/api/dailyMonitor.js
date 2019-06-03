@@ -43,6 +43,13 @@ export function getVitalCapacityRecord() {
   })
 }
 
+export function saveBloodSugar(data) {
+  return request({
+    url: '/DailyMonitor/SaveBloodSugar',
+    method: 'post',
+    data
+  })
+}
 export function saveBloodPressure(data) {
   return request({
     url: '/DailyMonitor/SaveBloodPressure',
@@ -50,6 +57,39 @@ export function saveBloodPressure(data) {
     data
   })
 }
+
+export function saveBloodOxygenRecord(data) {
+  return request({
+    url: '/DailyMonitor/SaveBloodOxygenRecord',
+    method: 'post',
+    data
+  })
+}
+
+export function saveHeartRate(data) {
+  return request({
+    url: '/DailyMonitor/SaveHeartRate',
+    method: 'post',
+    data
+  })
+}
+
+export function saveStepRecord(data) {
+  return request({
+    url: '/DailyMonitor/SaveStepRecord',
+    method: 'post',
+    data
+  })
+}
+
+export function saveVitalCapacityRecord(data) {
+  return request({
+    url: '/DailyMonitor/SaveVitalCapacityRecord',
+    method: 'post',
+    data
+  })
+}
+
 export function getBloodPressureReport(type) {
   return request({
     url: '/DailyMonitor/GetBloodPressureReport' + '?reportTimeType=' + type,

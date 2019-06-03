@@ -3,33 +3,37 @@
     <ul class="manual_ul">
       <li>
         <div class="text-tit"><span>*</span>时间段</div>
-        <select-code :slot-data="valueTime" class="text-input"/>
+        <select-code :slot-data="valueTime" class="text-input" @showType ="showSugarType"/>
         <div class="company"><i class="iconfont">&#xe64a;</i></div>
       </li>
       <li>
         <div class="text-tit"><span>*</span>血糖值</div>
-        <div class="text-input"><input type="number" /></div>
+        <div class="text-input">
+          <input v-model="bloodSugar.Sugar" type="number">
+        </div>
         <div class="company">mmol/L</div>
       </li>
       <li>
         <div class="text-tit"><span>*</span>测量时间</div>
-        <date-picker class="text-input"/>
+        <date-picker class="text-input" @showTime="showTime"/>
         <div class="company"><i class="iconfont">&#xe64a;</i></div>
       </li>
     </ul>
-    <input type="submit" class="manual-btn" value="保存" >
+    <input type="submit" class="manual-btn" value="保存" @click="saveData" >
   </div>
 </template>
 
 <script>
+import { Toast } from 'mint-ui'
 import DatePicker from '@/components/DatePicker'
 import SelectCode from '@/components/SelectCode'
+import { saveBloodSugar } from '@/api/dailyMonitor'
 export default {
   name: 'BloodPressureManual',
   components: { DatePicker, SelectCode },
   data() {
     return {
-      valueTime:[
+      valueTime: [
         {
           values: ['空腹', '随机', '早晨后', '午餐前', '午餐后', '晚餐前', '晚餐后', '睡前', '凌晨']
         }
@@ -38,12 +42,46 @@ export default {
         {
           values: ['男', '女', '其他']
         }
-      ]
+      ],
+      bloodSugar: {
+        SugarTypeList: null,
+        Sugar: null,
+        ExamTime: null
+      }
     }
   },
   mounted() {
     // 修改导航标题
     this.$store.state.app.pageTitle = '手动输入血糖'
+  },
+  methods: {
+    showTime(time) {
+      this.bloodSugar.ExamTime = time
+    },
+    showSugarType(type) {
+      this.bloodSugar.SugarTypeList = type
+      console.log('SugarTypeList:' + this.bloodSugar.SugarTypeList)
+    },
+    saveData() {
+      saveBloodSugar(this.bloodSugar).then(() => {
+        console.log(this.bloodSugar)
+        if (this.bloodSugar.SugarTypeList == null || this.bloodSugar.Sugar == null || this.bloodSugar.ExamTime == null) {
+          Toast('不能为空')
+        } else {
+          Toast({
+            title: '成功',
+            message: '保存成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+        console.log(this.bloodPressure)
+        this.listLoading = false
+      }, error => {
+        console.log('[error] ' + error) // for debug
+        this.listLoading = false
+      })
+    }
   }
 }
 </script>

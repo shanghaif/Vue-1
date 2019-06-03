@@ -3,32 +3,61 @@
     <ul class="manual_ul">
       <li>
         <div class="text-tit"><span>*</span>心率</div>
-        <div class="text-input"><input type="number" ></div>
+        <div class="text-input"><input v-model="heartRate.Rate" type="number"></div>
         <div class="company">次/分</div>
       </li>
       <li>
         <div class="text-tit"><span>*</span>测量时间</div>
-        <date-picker class="text-input"/>
+        <date-picker class="text-input" @showTime="showTime"/>
         <div class="company"><i class="iconfont">&#xe64a;</i></div>
       </li>
     </ul>
-    <input type="submit" class="manual-btn" value="保存" >
+    <input type="submit" class="manual-btn" value="保存" @click="saveData">
   </div>
 </template>
 
 <script>
+import { Toast } from 'mint-ui'
 import DatePicker from '@/components/DatePicker'
 import SelectCode from '@/components/SelectCode'
+import { saveHeartRate } from '@/api/dailyMonitor'
 export default {
   name: 'BloodPressureManual',
   components: { DatePicker, SelectCode },
   data() {
     return {
+      heartRate: {
+        Rate: null,
+        ExamTime: null
+      }
     }
   },
   mounted() {
     // 修改导航标题
     this.$store.state.app.pageTitle = '手动输入血压'
+  },
+  methods: {
+    showTime(time) {
+      this.heartRate.ExamTime = time
+    },
+    saveData() {
+      saveHeartRate(this.heartRate).then(() => {
+        if (this.heartRate.Rate == null || this.heartRate.ExamTime == null) {
+          Toast('不能为空')
+        } else {
+          Toast({
+            title: '成功',
+            message: '保存成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+        this.listLoading = false
+      }, error => {
+        console.log('[error] ' + error) // for debug
+        this.listLoading = false
+      })
+    }
   }
 }
 </script>

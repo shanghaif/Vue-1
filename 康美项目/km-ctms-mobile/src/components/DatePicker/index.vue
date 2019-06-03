@@ -1,6 +1,6 @@
 <template>
   <div class="dataTime">
-    <div @click="openPicker">{{ time | formatDate }}</div>
+    <div @click="openPicker"><span v-if="time>0">{{ time | formatDate }}</span><span v-else>请选择时间</span></div>
     <mt-datetime-picker
       ref="picker"
       :start-date="startDate"
@@ -30,8 +30,11 @@ export default {
   data() {
     return {
       startDate: new Date(),
-      time: new Date()
+      time: null
     }
+  },
+  mounted() {
+
   },
   methods: {
     openPicker() {

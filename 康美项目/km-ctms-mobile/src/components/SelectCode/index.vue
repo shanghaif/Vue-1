@@ -83,6 +83,7 @@ export default {
       this.popupVisible = false
       this.currentTags = this.$refs.picker.getValues()[0]
       this.$emit('change', this.currentTags) // 把change传给父级
+      this.$emit('showType', this.selectedText)
     },
     updateValue(val) {
       const len = this.slotData[0].values.length

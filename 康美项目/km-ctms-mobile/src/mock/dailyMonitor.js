@@ -481,7 +481,7 @@ export default {
   getBloodSugarRecord: () => {
     return bloodSugarRecord
   },
-  saveEatHabit: () => ({
+  saveBloodSugar: () => ({
     data: 'success'
   }),
   getHeartRateRecord: () => {
@@ -493,6 +493,12 @@ export default {
   getBloodOxygenRecord: () => {
     return bloodOxygenRecord
   },
+  saveBloodOxygenRecord: () => ({
+    data: 'success'
+  }),
+  saveHeartRate: () => ({
+    data: 'success'
+  }),
   getVitalCapacityRecord: () => {
     return vitalCapacityRecord
   },
@@ -502,7 +508,10 @@ export default {
   getBloodSugarReport: () => {
     return bloodSugarReport
   },
-  saveSmokeDrink: () => ({
+  saveStepRecord: () => ({
+    data: 'success'
+  }),
+  saveVitalCapacityRecord: () => ({
     data: 'success'
   })
 }

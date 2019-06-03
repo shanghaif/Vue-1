@@ -3,7 +3,7 @@
     <ul class="manual_ul">
       <li>
         <div class="text-tit"><span>*</span>收缩压</div>
-        <div class="text-input"><input v-model="bloodPressure.Systolic" type="number"></div>
+        <div class="text-input"><input v-model="bloodPressure.Systolic" type="number" ></div>
         <div class="company">mmHg</div>
       </li>
       <li>
@@ -32,9 +32,9 @@ export default {
   data() {
     return {
       bloodPressure: {
-        'Systolic': null,
-        'Diastolic': null,
-        'ExamTime': null
+        Systolic: null,
+        Diastolic: null,
+        ExamTime: null
       }
     }
   },
@@ -45,18 +45,21 @@ export default {
   methods: {
     showTime(time) {
       this.bloodPressure.ExamTime = time
-      console.log('time:' + this.bloodPressure.ExamTime)
     },
     saveData() {
       saveBloodPressure(this.bloodPressure).then(() => {
+        if (this.bloodPressure.Systolic == null || this.bloodPressure.Diastolic == null || this.bloodPressure.ExamTime == null) {
+          Toast('不能为空')
+        } else {
+          Toast({
+            title: '成功',
+            message: '保存成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
         console.log(this.bloodPressure)
         this.listLoading = false
-        Toast({
-          title: '成功',
-          message: '保存成功',
-          type: 'success',
-          duration: 2000
-        })
       }, error => {
         console.log('[error] ' + error) // for debug
         this.listLoading = false
