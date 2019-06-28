@@ -122,7 +122,7 @@ export default {
           that.mentalSuggestion = data.PsychologyResult.BehaviorSuggestion;
           that.societySuggestion = data.SocialResult.BehaviorSuggestion;
           that.$router.push({name:that.linkerList[0].name,params:{suggestionData:that.dietSuggestion,suggestionDetailData:that.dietSuggestionDetail}});
-          
+          console.log('dietSuggestion ==' + that.dietSuggestion);
           // 分数
          // document.getElementById('head_span_score').innerHTML = data.PersonDeseaseCategory.HealthScore;
          // document.getElementById('head_span_grade').innerHTML = data.PersonDeseaseCategory.HealthGrade;

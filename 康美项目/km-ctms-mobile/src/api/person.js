@@ -15,6 +15,14 @@ export function updatePerson(data) {
     data
   })
 }
+//切换家庭成员
+export function getSwitchFamilyMember(memberID) {
+  return request({
+    method: 'get',
+    url: '/api/PersonFamily/SwitchFamilyMember',
+    params: { memberID }
+  })
+}
 
 // export function fetchList(query) {
 //   return request({

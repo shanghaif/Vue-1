@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchMap(query) {
   return request({
-    url: '/dict/map',
+    url: '/api/dict/map',
     method: 'get',
     params: query
   })

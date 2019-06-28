@@ -54,48 +54,7 @@ export default {
       ],
       imgUrl: require('../../assets/images/suggest/bg_aaa@3x.png'),
       iconUrl: require('../../assets/images/suggest/iconfont_message@3x.png'),
-      suggest: {
-        'HealthSuggestID': null,
-        'Age': null,
-        'Period': null,
-        'Sex': null,
-        'HealthProblem': '3713.3724.5003.253.5005.',
-        'PhysicalExamination': '一般检查、内科、外科、眼科、耳鼻喉科、口腔科、血常规、尿常规、肝功、肾功、血脂、血糖、心电图检查、胸部正位片、肝胆脾胰双肾B超.',
-        'LifeStyle': '.',
-        'Vaccine': '每年注射流感疫苗:预防流感.             破伤风白喉百日咳混合疫苗:预防破伤风、白喉、百日咳 （每10年一次）.                麻疹、腮腺炎和风疹的联合疫苗:预防麻疹、腮腺炎和风疹（无接种史及感染史者建议接种）.\n水痘疫苗:预防水痘（无接种史及感染史者建议接种）.                              男性人乳头瘤病毒疫苗:预防生殖器疣（无性生活史、接种史、感染史者建议接种）.',
-        'CreatedBy': 1,
-        'CreatedTime': '2017-12-01T09:57:21',
-        'ModifiedBy': 37,
-        'ModifiedTime': '2018-01-10T16:06:51',
-        'IsDeleted': false,
-        'HealthProblemItems': [
-          {
-            'BatDeseaseID': 3686,
-            'Name': '肾结石',
-            'HealthTypeCode': '253'
-          },
-          {
-            'BatDeseaseID': null,
-            'Name': '肥胖',
-            'HealthTypeCode': '3713'
-          },
-          {
-            'BatDeseaseID': 169,
-            'Name': '高血压',
-            'HealthTypeCode': '3724'
-          },
-          {
-            'BatDeseaseID': 3731,
-            'Name': '黑色素瘤',
-            'HealthTypeCode': '5003'
-          },
-          {
-            'BatDeseaseID': null,
-            'Name': '睾丸癌',
-            'HealthTypeCode': '5005'
-          }
-        ]
-      }
+      suggest: {}
     }
   },
   created() {
@@ -158,8 +117,8 @@ export default {
         age = year
       }
       getSuggest(age, gender, period).then(response => {
-        this.suggest = response.data
-        console.log(getSuggest(age, gender, period))
+        this.suggest = response.data;
+        console.log(JSON.stringify(response.data))
         if (this.suggest.Sex === 1) {
           this.suggest.Sex = '男'
         } else if (this.suggest.Sex === 1) {
@@ -173,7 +132,7 @@ export default {
           this.suggest.Age = age + '岁'
         }
         this.suggest.LifeStyles = this.suggest.LifeStyle.replace(/[\s]/g, '').split('.') // 把一字符串分割成数组
-        this.suggest.Vaccine = this.suggest.LifeStyle.replace(/[\s]/g, '').split('.')
+        this.suggest.Vaccine = this.suggest.Vaccine.replace(/[\s]/g, '').split('.')
         this.listLoading = false
       }, error => {
         this.listLoading = false

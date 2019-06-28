@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <!--导航-->
     <ul class="nav clearfix">
       <li v-for="(item , index) in tabNav" v-bind:class="{active: showBoxId === index}" v-on:click="changeBox(index)">{{item.text}}</li>
@@ -8,11 +7,9 @@
     <!--导航-->
 
     <ul class="content-box">
-
       <!--健康风险-->
       <li v-show="showBoxId === '0'">
         <div class="textTitle" v-html="textTitle[0].text"></div>
-
         <div class="animate-box">
           <div class="circleProgress_wrapper">
             <div class="wrapper right">
@@ -23,44 +20,40 @@
             </div>
           </div>
           <div class="point"></div>
-
           <div class="score" v-html="score"><h6>53</h6><p>优秀</p></div>
-
         </div>
-
         <div class="heighter" v-html="PersonDeseaseCategory">高于同年龄平均水平<span>30%</span></div>
-
         <div class="textTitle">主要危险因素：</div>
-
         <ul class="risk-factor">
           <li><p>风险因素</p><p>本次结果</p><p>正常参考</p></li>
           <li v-for="item in riskFactor"><p>{{item.FactorName}}</p><p style="color: #333" v-if="item.Status === 2">{{item.Result}}</p><p v-else>{{item.Result}}</p><p>{{item.Remark}}</p></li>
         </ul>
-
-        <p class="warning-gray" v-html="bz">注：您本次评估的健康档案信息完整度为95%，评估时间为2018-09-22。信息越完整，评估越精准！建议完善信息后再次评估</p>
-
+        <!-- <p class="warning-gray" v-html="bz">   -->
+        <p class="warning-gray">
+          注：您本次评估的健康档案信息完整度为{{complete}}%，评估时间为{{DeseaseCategoryTime}}。<span v-if="complete<100">信息越完整，评估越精准！建议完善信息后再次评估。</span>
+        </p>
       </li>
       <!--健康风险-->
 
       <!--调理建议-->
       <li v-show="showBoxId === '1'">
         <div class="textTitle" v-html="textTitle[1].text"></div>
-
         <ul class="health-product">
           <li v-for="item in healthProduct" class="clearfix">
             <div class="img-box"><img v-bind:src="item.Image" /></div>
-            <h6>{{item.ProductName}}</h6>
+            <h6>{{item.ProductName}}（300g，2-3根）</h6>
             <p>{{item.Remark}}</p>
+            <div class="price-box"><h6>￥398<p>已卖出2321{{}}件</p></h6></div>
+            
+            
           </li>
         </ul>
-
       </li>
       <!--调理建议-->
 
       <!--运动建议-->
-      <li v-show="showBoxId === '2'" id="sport-advice" >
+      <li v-show="showBoxId === '2'" id="sport-advice">
         <div class="textTitle" v-html="textTitle[2].text"></div>
-
         <ul class="motion-plan">
           <li v-for="item in motionPlan">
             <p>{{item.WeekName}}</p>
@@ -68,144 +61,128 @@
             <p v-html="item.long"></p>
           </li>
         </ul>
-
         <p class="conclusion">按照上述安排进行锻炼，您本周可通过运动消耗热量： <span>{{sportKcal.power}}</span> Kcal，相当于减少脂肪：<span>{{sportKcal.fat}}</span>g</p>
-
         <div style="background-color: #f5f5f5;height: 10px"></div>
-
         <div class="textTitle">运动流程</div>
-
-        <p class="conclusion">1. 准备活动：进行5分钟左右速度稍慢的快走，并活动全身关节。<br/>
-          2.  主体部分：按照运动计划进行;<br/>
+        <p class="conclusion">
+          1. 准备活动：进行5分钟左右速度稍慢的快走，并活动全身关节。<br />
+          2.  主体部分：按照运动计划进行;<br />
           <template v-for="item in minPlan">
-            {{item.WeekName}}：{{item.SportName}}({{item.SportTimeMin}}-{{item.SportTimeMax}}分钟);<br/>
+            {{item.WeekName}}：{{item.SportName}}({{item.SportTimeMin}}-{{item.SportTimeMax}}分钟);
+            <br />
           </template>
-          3.  整理活动;<br/>
-          慢走3分钟(防止突然停止运动所造成的肢体瘀血，回心血量 下降，从而引起晕厥或心律失常)</p>
-
+          3.  整理活动;<br />
+          慢走3分钟(防止突然停止运动所造成的肢体瘀血，回心血量 下降，从而引起晕厥或心律失常)
+        </p>
       </li>
       <!--运动建议-->
 
       <!--饮食建议-->
       <li v-show="showBoxId === '3'" id="food">
-        <div class="textTitle">您目前的体重指数<span>{{textTitle[3].BMI}}</span>kg/m²，属于<span>{{textTitle[3].BMIDescription}}</span>。<br/>为您推荐每日饮食热量供给量：<span>{{textTitle[3].DietCalory}}</span>kcal</div>
-
+        <div class="textTitle">您目前的体重指数<span>{{textTitle[3].BMI}}</span>kg/m²，属于<span>{{textTitle[3].BMIDescription}}</span>。<br />为您推荐每日饮食热量供给量：<span>{{textTitle[3].DietCalory}}</span>kcal</div>
         <ul class="food-ratio">
           <li v-for="item in foodRatio"><h6>{{item.kind}}</h6><p>{{item.percent}}</p></li>
         </ul>
-
-        <div class="food-power">{{textTitle[3].DietCalory}}<br/><span>kcal</span></div>
-
+        <div class="food-power">{{textTitle[3].DietCalory}}<br /><span>kcal</span></div>
         <div style="background-color: #f5f5f5;height: 10px"></div>
-
         <div class="foot-title">常见食物举例</div>
-
         <div class="foot-title">谷薯类</div>
         <ul class="food-quantity">
           <li>
-            <img src="../assets/img/rice1.png"/>
+            <img src="../assets/img/rice1.png" />
             <p>大米<span>{{foodCon.Rice}}</span>两</p>
           </li>
           <li>
-            <img src="../assets/img/rice2.png"/>
+            <img src="../assets/img/rice2.png" />
             <p>馒头<span>{{foodCon.SteamedBun }}</span>两</p>
           </li>
           <li>
-            <img src="../assets/img/rice3.png"/>
+            <img src="../assets/img/rice3.png" />
             <p>红薯<span>{{foodCon.Potato }}</span>两</p>
           </li>
         </ul>
-
         <div class="foot-title">蔬菜类</div>
         <ul class="food-quantity">
           <li>
-            <img src="../assets/img/vegetables1.png"/>
+            <img src="../assets/img/vegetables1.png" />
             <p>番茄<span>{{foodCon.ChineseCabbage }}</span>两</p>
           </li>
           <li>
-            <img src="../assets/img/vegetables2.png"/>
+            <img src="../assets/img/vegetables2.png" />
             <p>南瓜<span>{{foodCon.Pumpkin }}</span>两</p>
           </li>
           <li>
-            <img src="../assets/img/vegetables3.png"/>
+            <img src="../assets/img/vegetables3.png" />
             <p>胡萝卜<span>{{foodCon.Carrot}}</span>两</p>
           </li>
         </ul>
-
         <div class="foot-title">肉蛋类</div>
         <ul class="food-quantity">
           <li>
-            <img src="../assets/img/meat1.png"/>
+            <img src="../assets/img/meat1.png" />
             <p>牛肉<span>{{foodCon.Meat}}</span>两</p>
           </li>
           <li>
-            <img src="../assets/img/meat2.png"/>
+            <img src="../assets/img/meat2.png" />
             <p>鸡蛋<span>{{foodCon.Egg}}</span>两</p>
           </li>
           <li>
-            <img src="../assets/img/meat3.png"/>
+            <img src="../assets/img/meat3.png" />
             <p>鱼<span>{{foodCon.Fish}}</span>两</p>
           </li>
         </ul>
-
         <div class="foot-title">豆奶类</div>
         <ul class="food-quantity">
           <li>
-            <img src="../assets/img/milk1.png"/>
+            <img src="../assets/img/milk1.png" />
             <p>牛奶<span>{{foodCon.Milk}}</span>ml</p>
           </li>
           <li>
-            <img src="../assets/img/milk2.png"/>
+            <img src="../assets/img/milk2.png" />
             <p>南方豆腐<span>{{foodCon.Tofu}}</span>两</p>
           </li>
           <li>
-            <img src="../assets/img/milk3.png"/>
+            <img src="../assets/img/milk3.png" />
             <p>豆腐干<span>{{foodCon.DriedTofu}}</span>两</p>
           </li>
         </ul>
-
         <div class="foot-title">水果类</div>
         <ul class="food-quantity">
           <li>
-            <img src="../assets/img/fruits1.png"/>
+            <img src="../assets/img/fruits1.png" />
             <p>苹果<span>{{foodCon.Apple}}</span>两</p>
           </li>
           <li>
-            <img src="../assets/img/fruits2.png"/>
+            <img src="../assets/img/fruits2.png" />
             <p>香蕉<span>{{foodCon.Banana}}</span>两</p>
           </li>
           <li>
-            <img src="../assets/img/fruits3.png"/>
+            <img src="../assets/img/fruits3.png" />
             <p>西瓜<span>{{foodCon.Watermelon}}</span>两</p>
           </li>
         </ul>
-
         <div class="foot-title">油脂类</div>
         <ul class="food-quantity">
           <li>
-            <img src="../assets/img/grease.png"/>
+            <img src="../assets/img/grease.png" />
             <p>各种植物油和动物油<span>{{foodCon.Oil}}</span>汤匙（<span>10g</span>汤匙）</p>
           </li>
         </ul>
-
         <p class="warning-red">*每日食盐摄入量＜6g，水1500-1700毫升</p>
-
       </li>
       <!--饮食建议-->
-
     </ul>
 
     <!--完善档案-->
-    <router-link :to="{name:'basic-file'}" class="file-btn"><span>完</span><span>善</span><br/><span>档</span><span>案</span></router-link>
+    <router-link :to="{name:'basic-file'}" class="file-btn"><span>完</span><span>善</span><br /><span>档</span><span>案</span></router-link>
     <!--完善档案-->
   </div>
 </template>
 
-
 <script>
   import api from "../api/index";
   import globalMixin from "../mixins/global";
-import { types } from 'util';
+  import { types } from 'util';
   export default {
     name: 'Report',
     mixins: [globalMixin],
@@ -216,31 +193,32 @@ import { types } from 'util';
       return {
         tabNav: {
           "0": {
-            "text":"健康风险"
+            "text": "健康风险"
           },
           "1": {
-            "text":"调理建议"
+            "text": "调理建议"
           },
           "2": {
-            "text":"运动建议"
+            "text": "运动建议"
           },
           "3": {
-            "text":"饮食建议"
+            "text": "饮食建议"
           }
         },
         showBoxId: "0",   //切换框
         textTitle: {
           "0": {
-            "text":"综合评分："
+            "text": "综合评分："
           },
           "1": {
-            "text":"保健品"
+            "text": "保健品"
           },
           "2": {
             "text": '<img src="' + require("../assets/img/sportIcon.png") + '"/>' + "您最近一周的有氧运动计划"
           },
           "3": {
           },
+
         },
         score: "",
         riskFactor: {},   //风险因素
@@ -256,75 +234,82 @@ import { types } from 'util';
           fat: 850,
         },
         foodRatio: [],    //饮食计划
-        foodCon: {}
+        foodCon: {},
+        complete: 0,
+        ReportObj: [],
+        DeseaseCategoryTime: new Date(),
       };
     },
     computed: {},
     created() {
-         this.$common.getToken().then(t => {
-          if(t){
-              this.getReport();
-          }
-        });
+      this.$common.getToken().then(t => {
+        if (t) {
+          this.getReport();
+          this.getComplete();
+        }
+      });
     },
     mounted() {
     },
     methods: {
       //切换
-      changeBox (i) {
+      changeBox(i) {
         this.showBoxId = i;
       },
       //获取报告内容
-      getReport: function (r,o) {     
+      getReport: function (r, o) {
         r = this.$common.getQueryVariable('RecordNo') || "";
         o = this.$common.getOpenId() || "";
 
         let that = this;
         that.$fetch(that.$api.getReport + "?RecordNo=" + r + "&OpenId=" + o)
-          .then(function(res){
-            if(res.IsSuccess === true) {
+          .then(function (res) {
+            that.ReportObj = res.ReturnData;
+            if (res.IsSuccess === true) {
 
-              let d = that.uniq(res.ReturnData.FactorRecordList); //去重
-              that.riskFactor = Object.assign({},that.riskFactor , d );//危险因素
+              let d = that.uniq(that.ReportObj.FactorRecordList); //去重
+              that.riskFactor = Object.assign({}, that.riskFactor, d);//危险因素
 
-              that.healthRisk(res.ReturnData.PersonDeseaseCategory);//健康风险
+              that.healthRisk(that.ReportObj.PersonDeseaseCategory);//健康风险
 
               //去掉T字母
-              let time1 = new Date().format(res.ReturnData.PersonDeseaseCategory.ModifiedTime);
+              let time1 = new Date().format(that.ReportObj.PersonDeseaseCategory.ModifiedTime);
               let b = time1.split("T");
               let s = b[1];
-              let z = s.split(":",3);
+              let z = s.split(":", 3);
 
-              that.bz = "您本次评估的健康档案信息完整度为" + res.ReturnData.PersonDeseaseCategory.PhysiologicalHealth + "%，评估时间为" + that.$common.dataFormat(res.ReturnData.PersonDeseaseCategory.ModifiedTime,"yyyy-MM-dd hh:mm:ss")+ "。信息越完整，评估越精准！建议完善信息后再次评估";
-
+              //that.bz = "您本次评估的健康档案信息完整度为" + that.ReportObj.PersonDeseaseCategory.PhysiologicalHealth + "%，评估时间为" + that.$common.dataFormat(that.ReportObj.PersonDeseaseCategory.ModifiedTime,"yyyy-MM-dd hh:mm:ss")+ "。信息越完整，评估越精准！建议完善信息后再次评估";
+              if (that.ReportObj.PersonDeseaseCategory.DeseaseCategoryTime) {
+                that.DeseaseCategoryTime = that.$common.dataFormat(that.ReportObj.PersonDeseaseCategory.DeseaseCategoryTime, "yyyy-MM-dd hh:mm:ss");
+              }
               setTimeout(function () {
                 //调理建议
                 that.healthProduct = {
-                  ...res.ReturnData.Dimensions
+                  ...that.ReportObj.Dimensions
                 };
 
                 //运动建议
-                that.sportAdvice(res.ReturnData.SportAdvice);
+                that.sportAdvice(that.ReportObj.SportAdvice);
 
                 //饮食建议前半部
-                that.dietAdvice(res.ReturnData.DietAdvice);
+                that.dietAdvice(that.ReportObj.DietAdvice);
 
-                that.foodCon = res.ReturnData.DietAdviseDetail;
+                that.foodCon = that.ReportObj.DietAdviseDetail;
 
               }, 1000);
 
             }
             else {
 
-              if (res.ReturnMessage == "未绑定") {
-                  var returnRecordNo = res.ReturnData || "";
-                  if (returnRecordNo != "") {
-                      that.$router.replace({ name: 'phone-number', query: { RecordNo: returnRecordNo } });
-                  } else {
-                      that.$router.replace({ name: 'error', query: { err: "对不起，未发现档案！" } });
-                  } 
-              }else{
-                  that.errorDialogeShow(res.ReturnMessage);
+              if (res.ReturnCode === 40002) {
+                var returnRecordNo = that.ReportObj || "";
+                if (returnRecordNo != "") {
+                  that.$router.replace({ name: 'phone-number', query: { RecordNo: returnRecordNo } });
+                } else {
+                  that.$router.replace({ name: 'error', query: { err: "对不起，未发现档案！" } });
+                }
+              } else {
+                that.errorDialogeShow(res.ReturnMessage);
               }
             }
           })
@@ -462,92 +447,92 @@ import { types } from 'util';
                 ...soportData
               };
               motionPlan[0].long = motionPlan[0].SportTimeMin + "-" + motionPlan[0].SportTimeMax + "<br/>min";
-              motionPlan[0].SportIcon = require("../assets/"+soportData.SportIcon);
+              motionPlan[0].SportIcon = require("../assets/" + soportData.SportIcon);
               break;
             case "周二":
               motionPlan[1] = {
                 ...soportData
               };
               motionPlan[1].long = motionPlan[1].SportTimeMin + "-" + motionPlan[1].SportTimeMax + "<br/>min";
-              motionPlan[1].SportIcon = require("../assets/"+soportData.SportIcon);
+              motionPlan[1].SportIcon = require("../assets/" + soportData.SportIcon);
               break;
             case "周三":
               motionPlan[2] = {
                 ...soportData
               };
               motionPlan[2].long = motionPlan[2].SportTimeMin + "-" + motionPlan[2].SportTimeMax + "<br/>min";
-              motionPlan[2].SportIcon = require("../assets/"+soportData.SportIcon);
+              motionPlan[2].SportIcon = require("../assets/" + soportData.SportIcon);
               break;
             case "周四":
               motionPlan[3] = {
                 ...soportData
               };
               motionPlan[3].long = motionPlan[3].SportTimeMin + "-" + motionPlan[3].SportTimeMax + "<br/>min";
-              motionPlan[3].SportIcon = require("../assets/"+soportData.SportIcon);
+              motionPlan[3].SportIcon = require("../assets/" + soportData.SportIcon);
               break;
             case "周五":
               motionPlan[4] = {
                 ...soportData
               };
               motionPlan[4].long = motionPlan[4].SportTimeMin + "-" + motionPlan[4].SportTimeMax + "<br/>min";
-              motionPlan[4].SportIcon = require("../assets/"+soportData.SportIcon);
+              motionPlan[4].SportIcon = require("../assets/" + soportData.SportIcon);
               break;
             case "周六":
               motionPlan[5] = {
                 ...soportData
               };
               motionPlan[5].long = motionPlan[5].SportTimeMin + "-" + motionPlan[5].SportTimeMax + "<br/>min";
-              motionPlan[5].SportIcon = require("../assets/"+soportData.SportIcon);
+              motionPlan[5].SportIcon = require("../assets/" + soportData.SportIcon);
               break;
             case "周日":
               motionPlan[6] = {
                 ...soportData
               };
               motionPlan[6].long = motionPlan[6].SportTimeMin + "-" + motionPlan[6].SportTimeMax + "<br/>min";
-              motionPlan[6].SportIcon = require("../assets/"+soportData.SportIcon);
+              motionPlan[6].SportIcon = require("../assets/" + soportData.SportIcon);
               break;
           }
           soportData = "";
         }
 
-        this.motionPlan = Object.assign({},this.motionPlan, motionPlan );
+        this.motionPlan = Object.assign({}, this.motionPlan, motionPlan);
 
         this.sportKcal.power = data.Calory;
         this.sportKcal.fat = data.Fat;
       },
 
-      dietAdvice (data) {
+      dietAdvice(data) {
         if (data.Tip != null) {
           $("#food").html('<p class="bc">为了科学地为您制定饮食计划，您需要完善您的健康档案信息。请完善您的<span style="color:red;margin:0 4px;">' + data.Tip + '</span>信息。</p>');
           return;
         }
         if (data.Tip === null || data.Tip === "") {
-          this.textTitle[3] = Object.assign({}, this.textTitle[3],{ BMI: data.BMI,BMIDescription: data.BMIDescription,DietCalory:data.DietCalory});
+          this.textTitle[3] = Object.assign({}, this.textTitle[3], { BMI: data.BMI, BMIDescription: data.BMIDescription, DietCalory: data.DietCalory });
 
           let foodData = [
             {
               kind: "谷薯类",
-              percent : data.Potato + "%"
+              percent: data.Potato + "%"
             },
             {
               kind: "肉蛋类",
-              percent : data.MeatEgg + "%"
+              percent: data.MeatEgg + "%"
             },
             {
               kind: "豆奶类",
-              percent : data.SoyMilk + "%"
+              percent: data.SoyMilk + "%"
             },
             {
               kind: "蔬菜类",
-              percent : data.Vegetables + "%"
+              percent: data.Vegetables + "%"
             },
             {
               kind: "水果类",
-              percent : data.Fruits + "%"
+              percent: data.Fruits + "%"
             },
             {
               kind: "油脂类",
-              percent : data.Fats + "%"
+              percent: data.Fats + "%"
             },
           ];
           this.foodRatio = {
@@ -567,24 +552,57 @@ import { types } from 'util';
         animat = '@' + token + 'keyframes ' + name + '{0%{transform: rotateZ(' + val1 + 'deg);}50%{transform: rotateZ(' + val2 + 'deg);}100%{transform: rotateZ(' + val3 + 'deg);}}';
 
         return animat;
-      }
-
+      },
+      getComplete() {
+        let that = this;
+        return that.$fetch(that.$common.getMobileUrl(that.$api.GetWeChatPersonCompleteApi))
+          .then(function (res) {
+            if (res.IsSuccess === true) {
+              that.complete = res.ReturnData.DataIntegrity;
+            }
+          })
+      },
     }
   }
 
 
 </script>
-
 <style scoped>
+
   .score h6 {
     font-size: 1.333333333333333rem;
   }
+
   .score p {
     font-size: 0.3466666666666667rem;
   }
+
   .cl33 {
     color: #333;
   }
-</style>
 
+  .clearfix>h6 {
+    white-space:nowrap;
+    overflow:hidden;
+  }
+
+  .clearfix>.price-box {
+    display: inline;
+    float: left;
+    width: 69%;
+  }
+
+  .clearfix>.price-box>h6 {
+    width: 100%;
+    line-height: 1.13rem;
+    top: -25%; 
+    transform: translateY(25%);
+    color: #ff4848;
+  }
+
+  /* .clearfix>.price-box>h6>p {
+    float: right;
+    text-align: right;
+  } */
+</style>
 

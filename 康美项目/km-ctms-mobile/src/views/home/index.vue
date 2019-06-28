@@ -1,22 +1,26 @@
 <template>
   <div class="home">
     <banner />
-    <list-one />
-    <list-two />
-    <list-health />
+    <health-record />
+    <health-one />
+    <health-two />
+    <health-three />
+    <list-news />
   </div>
 </template>
 
 <script>
 import Banner from './components/Banner'
-import ListOne from './components/ListOne'
-import ListTwo from './components/ListTwo'
-import ListHealth from './components/ListHealth'
+import HealthRecord from './components/HealthRecord'
+import HealthOne from './components/HealthOne'
+import HealthTwo from './components/HealthTwo'
+import HealthThree from './components/HealthThree'
+import ListNews from './components/ListNews'
 
 export default {
   name: 'Home',
   components: {
-    Banner, ListOne, ListTwo, ListHealth
+    Banner,HealthRecord, HealthOne,HealthTwo,HealthThree,ListNews
   },
   data() {
     return {

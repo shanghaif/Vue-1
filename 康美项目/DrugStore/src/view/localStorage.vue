@@ -10,7 +10,7 @@
 <script>
   import globalMixin from "../mixins/global";
   export default {
-    name: "html-tempalte",
+    name: "localStorage",
     mixins: [globalMixin],
     data() {
       return {
@@ -38,7 +38,7 @@
           localStorage.removeItem("kmWechatOpenId");
           localStorage.removeItem("token");
           localStorage.removeItem("MobileUrl");
-
+          localStorage.removeItem("IsIDNumber");
         }
 
         alert("清除成功");

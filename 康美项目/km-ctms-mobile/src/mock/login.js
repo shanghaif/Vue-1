@@ -15,9 +15,9 @@ const userMap = {
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     name: 'Normal Editor'
   },
-  '5200f884d62b4981993722bbf8bdf505': {
+  '6ac5db116a3a49698aa214b37df3dcbe': {
     roles: ['editor'],
-    token: '5200f884d62b4981993722bbf8bdf505',
+    token: '6ac5db116a3a49698aa214b37df3dcbe',
     introduction: '我是编辑',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     name: 'Normal Editor'

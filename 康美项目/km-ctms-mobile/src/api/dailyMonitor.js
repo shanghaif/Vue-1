@@ -2,42 +2,42 @@ import request from '@/utils/request'
 
 export function getBloodPressureRecord() {
   return request({
-    url: '/DailyMonitor/GetBloodPressureRecord',
+    url: '/api/DailyMonitor/GetBloodPressureRecord',
     method: 'get',
     params: {}
   })
 }
 export function getBloodSugarRecord() {
   return request({
-    url: '/DailyMonitor/GetBloodSugarRecord',
+    url: '/api/DailyMonitor/GetBloodSugarRecord',
     method: 'get',
     params: {}
   })
 }
 export function getHeartRateRecord() {
   return request({
-    url: '/DailyMonitor/GetHeartRateRecord',
+    url: '/api/DailyMonitor/GetHeartRateRecord',
     method: 'get',
     params: {}
   })
 }
 export function getStepReocrd() {
   return request({
-    url: '/DailyMonitor/GetStepReocrd',
+    url: '/api/DailyMonitor/GetStepReocrd',
     method: 'get',
     params: {}
   })
 }
 export function getBloodOxygenRecord() {
   return request({
-    url: '/DailyMonitor/GetBloodOxygenRecord',
+    url: '/api/DailyMonitor/GetBloodOxygenRecord',
     method: 'get',
     params: {}
   })
 }
 export function getVitalCapacityRecord() {
   return request({
-    url: '/DailyMonitor/GetVitalCapacityRecord',
+    url: '/api/DailyMonitor/GetVitalCapacityRecord',
     method: 'get',
     params: {}
   })
@@ -45,14 +45,14 @@ export function getVitalCapacityRecord() {
 
 export function saveBloodSugar(data) {
   return request({
-    url: '/DailyMonitor/SaveBloodSugar',
+    url: '/api/DailyMonitor/SaveBloodSugar',
     method: 'post',
     data
   })
 }
 export function saveBloodPressure(data) {
   return request({
-    url: '/DailyMonitor/SaveBloodPressure',
+    url: '/api/DailyMonitor/SaveBloodPressure',
     method: 'post',
     data
   })
@@ -60,7 +60,7 @@ export function saveBloodPressure(data) {
 
 export function saveBloodOxygenRecord(data) {
   return request({
-    url: '/DailyMonitor/SaveBloodOxygenRecord',
+    url: '/api/DailyMonitor/SaveBloodOxygenRecord',
     method: 'post',
     data
   })
@@ -68,7 +68,7 @@ export function saveBloodOxygenRecord(data) {
 
 export function saveHeartRate(data) {
   return request({
-    url: '/DailyMonitor/SaveHeartRate',
+    url: '/api/DailyMonitor/SaveHeartRate',
     method: 'post',
     data
   })
@@ -76,7 +76,7 @@ export function saveHeartRate(data) {
 
 export function saveStepRecord(data) {
   return request({
-    url: '/DailyMonitor/SaveStepRecord',
+    url: '/api/DailyMonitor/SaveStepRecord',
     method: 'post',
     data
   })
@@ -84,7 +84,7 @@ export function saveStepRecord(data) {
 
 export function saveVitalCapacityRecord(data) {
   return request({
-    url: '/DailyMonitor/SaveVitalCapacityRecord',
+    url: '/api/DailyMonitor/SaveVitalCapacityRecord',
     method: 'post',
     data
   })
@@ -92,7 +92,7 @@ export function saveVitalCapacityRecord(data) {
 
 export function getBloodPressureReport(type) {
   return request({
-    url: '/DailyMonitor/GetBloodPressureReport' + '?reportTimeType=' + type,
+    url: '/api/DailyMonitor/GetBloodPressureReport' + '?reportTimeType=' + type,
     method: 'get',
     params: {}
   })
@@ -100,7 +100,7 @@ export function getBloodPressureReport(type) {
 
 export function getBloodSugarReport(type) {
   return request({
-    url: '/DailyMonitor/GetBloodSugarReport' + '?reportTimeType=' + type,
+    url: '/api/DailyMonitor/GetBloodSugarReport' + '?reportTimeType=' + type,
     method: 'get',
     params: {}
   })

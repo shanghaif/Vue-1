@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getSport() {
   return request({
-    url: '/lifeStyle/getPersonSport',
+    url: '/api/lifeStyle/getPersonSport',
     method: 'get',
     params: {}
   })
@@ -10,7 +10,7 @@ export function getSport() {
 
 export function saveSport(data) {
   return request({
-    url: '/lifeStyle/savePersonSport',
+    url: '/api/lifeStyle/savePersonSport',
     method: 'post',
     data
   })
@@ -18,14 +18,14 @@ export function saveSport(data) {
 
 export function getEatHabit() {
   return request({
-    url: '/lifeStyle/getPersonEatHabit',
+    url: '/api/lifeStyle/getPersonEatHabit',
     method: 'get',
     params: {}
   })
 }
 export function saveEatHabit(data) {
   return request({
-    url: '/lifeStyle/savePersonEatHabit',
+    url: '/api/lifeStyle/savePersonEatHabit',
     method: 'post',
     data
   })
@@ -33,14 +33,14 @@ export function saveEatHabit(data) {
 
 export function getSmokeDrink() {
   return request({
-    url: '/lifeStyle/getPersonSmokeDrink',
+    url: '/api/lifeStyle/getPersonSmokeDrink',
     method: 'get',
     params: {}
   })
 }
 export function saveSmokeDrink(data) {
   return request({
-    url: '/lifeStyle/savePersonSmokeDrink',
+    url: '/api/lifeStyle/savePersonSmokeDrink',
     method: 'post',
     data
   })
@@ -48,14 +48,14 @@ export function saveSmokeDrink(data) {
 
 export function getHealthHistory() {
   return request({
-    url: '/HealthHistory',
+    url: '/api/HealthHistory',
     method: 'get',
     params: {}
   })
 }
 export function saveHealthHistory(data) {
   return request({
-    url: '/HealthHistory',
+    url: '/api/HealthHistory',
     method: 'post',
     data
   })

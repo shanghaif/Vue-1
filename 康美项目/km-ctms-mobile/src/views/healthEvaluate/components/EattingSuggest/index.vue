@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-if="typeof dietSuggestion == 'object' && dietSuggestion.WeightEnergy != null">
+		<div v-if="typeof dietSuggestion == 'object' && !!dietSuggestion && dietSuggestion.WeightEnergy != null">
 			<with-data :suggestionData="dietSuggestion" :suggestionDetailData="dietSuggestionDetail"></with-data>
 		</div>
 		<div v-else>
