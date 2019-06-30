@@ -1,0 +1,104 @@
+$blue: #3190e8;  
+$bc: #e4e4e4;
+$fc:#fff;
+
+/*
+ * 设备判断
+*/ 
+$breakpoints: (
+	'xs': 'only screen and ( min-width: 480px)',
+  	'sm': 'only screen and ( min-width: 768px)',
+  	'md': 'only screen and ( min-width: 992px)',
+  	'lg': 'only screen and ( min-width: 1200px)',
+
+	'iPhone4S': 'only screen and (device-height:480px) and (-webkit-min-device-pixel-ratio:2)',
+	'iPhone5': 'only screen and (device-height:568px) and (-webkit-min-device-pixel-ratio:2)',
+	'iPhone6_7_8': 'only screen and (device-height:667px) and (-webkit-min-device-pixel-ratio:2)',
+	'iPhone6P_7P_8P': 'only screen and (device-height:736px) and (-webkit-min-device-pixel-ratio:2)',
+	'iPhone_X_Xs': 'only screen and (device-width: 375px) and (device-height: 812px)',
+	'iPhone_XsMax': 'only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-min-device-pixel-ratio:3)',
+	'iPhone_XR': 'only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-min-device-pixel-ratio:2)',
+) !default;
+
+@mixin respond-to($breakpoint_list) {
+	@each $breakpoint in $breakpoint_list {
+		$query: map-get($breakpoints, $breakpoint);
+		// 这里是scss error提示估计大部分人（包括我）都没怎么使用过
+		@if not $query {
+		@error 'No value found for `#{$breakpoint}`. Please make sure it is 
+		defined in `$breakpoints` map.';
+		}
+		// 具体断点解释在这里，作者比较严谨，校验了$query合法性
+		@media #{if(type-of($query) == 'string', unquote($query), inspect($query))}
+		{
+			@content;
+		}
+	}
+  }
+
+// 背景图片地址和大小
+@mixin bis($url) { 
+	background-image: url($url);
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+}
+
+@mixin borderRadius($radius) {
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    -ms-border-radius: $radius;
+    -o-border-radius: $radius;
+    border-radius: $radius;
+}
+//定位全屏
+@mixin allcover{
+	position:absolute;
+	top:0;
+	right:0;
+}
+
+//定位上下左右居中
+@mixin center {  
+	position: absolute;
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+//定位上下居中
+@mixin ct {  
+	position: absolute;
+	top: 50%;
+    transform: translateY(-50%);
+}
+
+//定位左右居中
+@mixin cl {  
+	position: absolute;
+	left: 50%;
+    transform: translateX(-50%);
+}
+
+//宽高
+@mixin wh($width, $height){
+	width: $width;
+	height: $height;
+}
+
+//字体大小、行高、字体
+@mixin font($size, $line-height, $family: 'Microsoft YaHei') {  
+	font: #{$size}/#{$line-height} $family;
+}
+
+//字体大小，颜色
+@mixin sc($size, $color){
+	font-size: $size;
+	color: $color;
+}
+
+//flex 布局和 子元素 对其方式
+@mixin fj($type: space-between){
+	display: flex;
+	justify-content: $type;
+
+}
