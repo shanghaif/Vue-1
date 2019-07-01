@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0452EEE222C9A6A00067EE60 /* BaseWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0452EEE122C9A6A00067EE60 /* BaseWebView.m */; };
 		3DD37E8022C89E1A0016843E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD37E7F22C89E1A0016843E /* AppDelegate.m */; };
 		3DD37E8322C89E1A0016843E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD37E8222C89E1A0016843E /* ViewController.m */; };
 		3DD37E8622C89E1A0016843E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DD37E8422C89E1A0016843E /* Main.storyboard */; };
@@ -16,6 +17,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0452EEDC22C9A5650067EE60 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		0452EEE022C9A6A00067EE60 /* BaseWebView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseWebView.h; sourceTree = "<group>"; };
+		0452EEE122C9A6A00067EE60 /* BaseWebView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseWebView.m; sourceTree = "<group>"; };
 		3DD37E7B22C89E1A0016843E /* WebView_test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebView_test.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DD37E7E22C89E1A0016843E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		3DD37E7F22C89E1A0016843E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -62,8 +66,11 @@
 				3DD37E7F22C89E1A0016843E /* AppDelegate.m */,
 				3DD37E8122C89E1A0016843E /* ViewController.h */,
 				3DD37E8222C89E1A0016843E /* ViewController.m */,
+				0452EEE022C9A6A00067EE60 /* BaseWebView.h */,
+				0452EEE122C9A6A00067EE60 /* BaseWebView.m */,
 				3DD37E8422C89E1A0016843E /* Main.storyboard */,
 				3DD37E8722C89E1C0016843E /* Assets.xcassets */,
+				0452EEDC22C9A5650067EE60 /* README.md */,
 				3DD37E8922C89E1C0016843E /* LaunchScreen.storyboard */,
 				3DD37E8C22C89E1C0016843E /* Info.plist */,
 				3DD37E8D22C89E1C0016843E /* main.m */,
@@ -141,6 +148,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0452EEE222C9A6A00067EE60 /* BaseWebView.m in Sources */,
 				3DD37E8322C89E1A0016843E /* ViewController.m in Sources */,
 				3DD37E8E22C89E1C0016843E /* main.m in Sources */,
 				3DD37E8022C89E1A0016843E /* AppDelegate.m in Sources */,
@@ -285,6 +293,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XYBK7B7U6R;
 				INFOPLIST_FILE = WebView_test/Info.plist;
@@ -303,6 +312,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XYBK7B7U6R;
 				INFOPLIST_FILE = WebView_test/Info.plist;
