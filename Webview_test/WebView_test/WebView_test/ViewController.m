@@ -39,6 +39,11 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
  webView当前URL
  */
 @property (copy, nonatomic) NSString *currentURL;
+/**
+ 用于遮挡滑动回退的手势遮罩
+ */
+@property (strong, nonatomic) UIView *panGestureMask;
+
 @end
 
 @implementation ViewController
@@ -76,9 +81,19 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
     
-    [_webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://10.2.24.108:8000"]]];
+//    [_webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://192.168.1.105:8000"]]];
+    NSURL *fileURL = [[NSBundle mainBundle] URLForResource:@"elm/index.html" withExtension:nil];
+    [_webview loadFileURL:fileURL allowingReadAccessToURL:fileURL];
     [self.view addSubview:_webview];
     
+    //手势遮罩
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] init];
+    _panGestureMask = [[UIView alloc] initWithFrame:CGRectMake(0, IPHONE_X ? 88 : 64, 30, self.view.bounds.size.height)];
+//    _panGestureMask.backgroundColor = [UIColor redColor];
+    [_panGestureMask addGestureRecognizer:panGesture];
+    [self.view addSubview:_panGestureMask];
+
+    //启动页--隐藏webview加载的延时问题
     _launchImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
     UIImage *image = [self getLaunchImage];
     _launchImageView.image = image;
@@ -118,11 +133,7 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
     NSString *regex = @".*\#\/(msite|search|order|profile).*";
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
     BOOL isRootPage = [pred evaluateWithObject:_currentURL];
-    if (isRootPage) {
-        _webview.allowsBackForwardNavigationGestures = NO;
-    }else{
-        _webview.allowsBackForwardNavigationGestures = YES;
-    }
+    _panGestureMask.hidden = !isRootPage;
 }
 
 #pragma mark - WKNavigationDelegate
@@ -199,9 +210,7 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
     NSLog(@"%@",message);
 }
 
-
-- (void)dealloc
-{
+- (void)dealloc{
     [_webview removeObserver:self forKeyPath:@"URL"];
 }
 
