@@ -9,13 +9,16 @@
 #import "ViewController.h"
 #import <WebKit/WebKit.h>
 
-// 判断是否为iPhone X 系列  这样写消除了在Xcode10上的警告。
+// 判断是否为iPhone X 系列
 #define IPHONE_X \
 ({BOOL isPhoneX = NO;\
 if (@available(iOS 11.0, *)) {\
 isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bottom > 0.0;\
 }\
 (isPhoneX);})
+
+// 判断是否为iPhone Plus 系列
+#define IPHONE_Plus [[UIApplication sharedApplication] delegate].window.bounds.size.height == 736
 
 /*
  原理是根据手机底部安全区的高度 判断是否为 iPhone X、XR、XS、XS Max
@@ -81,14 +84,16 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
     
-//    [_webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://192.168.1.105:8000"]]];
-    NSURL *fileURL = [[NSBundle mainBundle] URLForResource:@"elm/index.html" withExtension:nil];
-    [_webview loadFileURL:fileURL allowingReadAccessToURL:fileURL];
+//    [_webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://10.2.24.108/elm"]]];
+    NSString * bundlePath = [[NSBundle mainBundle] resourcePath];
+    NSString *filePath = [NSString stringWithFormat:@"%@/elm/index.html", bundlePath];
+    NSURL *url = [NSURL fileURLWithPath:filePath];
+    [_webview loadRequest:[NSURLRequest requestWithURL:url]];
     [self.view addSubview:_webview];
     
     //手势遮罩
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] init];
-    _panGestureMask = [[UIView alloc] initWithFrame:CGRectMake(0, IPHONE_X ? 88 : 64, 30, self.view.bounds.size.height)];
+    _panGestureMask = [[UIView alloc] initWithFrame:CGRectMake(0, IPHONE_X ? 80 : 64, IPHONE_Plus?30:25, self.view.bounds.size.height)];
 //    _panGestureMask.backgroundColor = [UIColor redColor];
     [_panGestureMask addGestureRecognizer:panGesture];
     [self.view addSubview:_panGestureMask];
@@ -125,8 +130,6 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
 
 // 观察URL的变化
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
-//    NSString *fromURL = change[@"old"];
-//    NSString *toURL = change[@"new"];
     _currentURL = [change[@"new"] absoluteString];
     NSLog(@"URL changed, from %@ -> to %@",change[@"old"],change[@"new"]);
     
