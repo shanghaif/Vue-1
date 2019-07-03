@@ -77,9 +77,6 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
     //解决状态栏空白问题
     if (@available(iOS 11.0, *)) {
         _webview.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-        if (IPHONE_X) {
-            
-        }
     } else {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
