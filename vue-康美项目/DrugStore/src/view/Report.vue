@@ -39,9 +39,9 @@
       <li v-show="showBoxId === '1'">
         <div class="textTitle" v-html="textTitle[1].text"></div>
         <ul class="health-product">
-          <li v-for="item in healthProduct" class="clearfix">
+          <li v-for="item in healthProduct" class="clearfix" @click="gotoProductURL(item.ProductURl)">
             <div class="img-box"><img v-bind:src="item.Image" /></div>
-            <h6>{{item.ProductName}}（300g，2-3根）</h6>
+            <h6>{{item.ProductName}}</h6>
             <p>{{item.Remark}}</p>
             <div class="price-box"><h6>￥398<p>已卖出2321{{}}件</p></h6></div>
             
@@ -541,7 +541,13 @@
         }
       },
 
-      //修改动画
+      // 跳转到商品详情外部链接
+      // 例："http://testkmjkzx.kmwlyy.com/web/shop/wx/auth/in?action=DETAIL&data=1adc0ba12d9b4f97834908bbfdceda80&groupId=a28dc233c40944b9b689f110dfb11a26&orgId=ZSZG"
+      gotoProductURL: function (url) {
+        window.location.href = url
+      },
+
+      // 修改动画
       createAnimate: function (name, val1, val2, val3) {
         let token = null,
           animat = null;
