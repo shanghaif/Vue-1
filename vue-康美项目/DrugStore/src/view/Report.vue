@@ -43,9 +43,7 @@
             <div class="img-box"><img v-bind:src="item.Image" /></div>
             <h6>{{item.ProductName}}</h6>
             <p>{{item.Remark}}</p>
-            <div class="price-box"><h6>￥398<p>已卖出2321{{}}件</p></h6></div>
-            
-            
+            <!-- <div class="price-box"><h6>￥398<p>已卖出2321{{}}件</p></h6></div> -->
           </li>
         </ul>
       </li>
@@ -544,7 +542,7 @@
       // 跳转到商品详情外部链接
       // 例："http://testkmjkzx.kmwlyy.com/web/shop/wx/auth/in?action=DETAIL&data=1adc0ba12d9b4f97834908bbfdceda80&groupId=a28dc233c40944b9b689f110dfb11a26&orgId=ZSZG"
       gotoProductURL: function (url) {
-        window.location.href = url
+        window.location.href = url;
       },
 
       // 修改动画

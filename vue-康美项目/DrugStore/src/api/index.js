@@ -1,5 +1,5 @@
-const hostUrl = "http://ytrsvm.natappfree.cc";
-// const hostUrl = "";
+// const hostUrl = "http://z47y4f.natappfree.cc";
+const hostUrl = "";
 
 let currentPage = 1;
 let pageSize = 10;
@@ -17,6 +17,7 @@ let api = {
   getWechatOpenId: hostUrl + "/Wechat/RedirectCode?redirect_uri=",
   getMobileNewToken: hostUrl + "/api/WeiXin/GetMobileNewToken", //获取token
   BindWechatIDNumber: hostUrl + "/api/customer/BindWechatIDNumber", //绑定微信和身份证
+  GetIsBindPerson: hostUrl + "/api/customer/GetIsBindPerson?OpenId=", //绑定微信和身份证
 
   BloodSugarReport: "/api/DailyMonitor/GetBloodSugarReport", //血糖报告
   BloodPressureReport: "/api/DailyMonitor/GetBloodPressureReport", //血糖报告npm run build

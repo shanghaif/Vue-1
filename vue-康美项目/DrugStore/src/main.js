@@ -31,6 +31,7 @@ Vue.prototype.$router1 = router;
 Vue.use(Vuex);
 Vue.use(Router);
 Vue.use(Mint);
+
 //路由拦截
 router.beforeEach((to, from, next) => {
 
@@ -50,7 +51,6 @@ router.beforeEach((to, from, next) => {
 
   next();
 });
-
 
 //配置请求信息
 axios.defaults.timeout = 30000;
