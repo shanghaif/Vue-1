@@ -1,12 +1,12 @@
 <template>
 	<div>
-		<transition :name="transitionName" mode="out-in">
+		<transition :name="transitionName">
 			<!-- keep-alive ?? -->
 			<keep-alive>
 			    <router-view  class="child-view" v-if="$route.meta.keepAlive"></router-view>
 			</keep-alive>
     	</transition>
-    	<transition :name="transitionName" mode="out-in">
+    	<transition :name="transitionName">
 			<router-view  class="child-view" v-if="!$route.meta.keepAlive"></router-view>
 		</transition>
 		
@@ -46,29 +46,55 @@
 <style lang="scss">
   	@import './style/common';
 	
-	.router-fade-enter-active, .router-fade-leave-active {
-	  	transition: opacity .3s;
+	// //透明度渐变动画转场
+	// .router-fade-enter-active, .router-fade-leave-active {
+	//   	transition: opacity .3s;
+	// }
+	// .router-fade-enter, .router-fade-leave-to {
+	// 	opacity: 0;
+	// }
+
+	.router-fade-enter-active {
+		// -webkit-transition-duration: 500ms;
+		// transition-duration: 500ms;
+		// -webkit-transition-timing-function: cubic-bezier(0.36, 0.66, 0.04, 1);
+		// transition-timing-function: cubic-bezier(0.36, 0.66, 0.04, 1);
+		// -webkit-transition-property: opacity, -webkit-transform, box-shadow;
+		// transition-property: opacity, transform, box-shadow;
+		transition: all .3s cubic-bezier(0.36, 0.66, 0.04, 1);
+		transform: translateX(-50%);
 	}
-	.router-fade-enter, .router-fade-leave-active {
-		opacity: 0;
+
+	.router-fade-leave-active {
+		transition: all .3s cubic-bezier(0.36, 0.66, 0.04, 1);
+		transform: translateX(-20%);
 	}
+
+	.router-fade-enter {
+		transform: translateX(-100%);
+	}
+
+	.router-fade-leave-to {
+		transform: translateX(-40%);
+	}
+
+
 
 	//无动画转场
-	.router-none-enter-active, .router-none-leave-active {
-	  	
-	}
-	.router-none-enter, .router-none-leave-active {
-		
-	}
+	.router-none-enter-active, .router-none-leave-active {}
+	.router-none-enter, .router-none-leave-active {}
 
 /* 
-	transition的钩子函数：
-	v-enter：定义上半场过渡的初始状态；在过渡开始前被添加，在过渡开始时会被移除
-	v-enter-to：定义上半场过渡的结束状态；在过渡开始时被添加，在过渡完成时会被移除
-	v-enter-active：这里包含了上面的v-enter、v-enter-to两个时间段，在这里可以对上半场过渡定义过渡时间、曲线等
-	v-leave：定义下半场过渡的初始状态；在过渡开始前被添加，在过渡开始时会被移除
-	v-leave-to：定义下半场过渡的结束状态；在过渡开始时被添加，在过渡完成时会被移除
-	v-leave-active：这里包含了上面的v-leave、v-leave-to两个时间段，在这里可以对下半场过渡定义过渡时间、曲线等
+	在进入/离开的过渡中，会有 6 个 class 切换：
+	v-enter：定义进入过渡的开始状态。在元素被插入之前生效，在元素被插入之后的下一帧移除。
+	v-enter-active：定义进入过渡生效时的状态。在整个进入过渡的阶段中应用，在元素被插入之前生效，在过渡/动画完成之后移除。
+					这个类可以被用来定义进入过渡的过程时间，延迟和曲线函数。
+	v-enter-to: (2.1.8版及以上) 定义进入过渡的结束状态。在元素被插入之后下一帧生效 (与此同时 v-enter 被移除)，在过渡/动画完成之后移除。
+	
+	v-leave: 定义离开过渡的开始状态。在离开过渡被触发时立刻生效，下一帧被移除。
+	v-leave-active：定义离开过渡生效时的状态。在整个离开过渡的阶段中应用，在离开过渡被触发时立刻生效，在过渡/动画完成之后移除。
+					这个类可以被用来定义离开过渡的过程时间，延迟和曲线函数。
+	v-leave-to: (2.1.8版及以上) 定义离开过渡的结束状态。在离开过渡被触发之后下一帧生效 (与此同时 v-leave 被删除)，在过渡/动画完成之后移除。
 */
 </style>
 
