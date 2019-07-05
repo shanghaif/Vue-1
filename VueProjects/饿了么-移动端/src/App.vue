@@ -46,38 +46,13 @@
 <style lang="scss">
   	@import './style/common';
 	
-	// //透明度渐变动画转场
-	// .router-fade-enter-active, .router-fade-leave-active {
-	//   	transition: opacity .3s;
-	// }
-	// .router-fade-enter, .router-fade-leave-to {
-	// 	opacity: 0;
-	// }
-
-	.router-fade-enter-active {
-		// -webkit-transition-duration: 500ms;
-		// transition-duration: 500ms;
-		// -webkit-transition-timing-function: cubic-bezier(0.36, 0.66, 0.04, 1);
-		// transition-timing-function: cubic-bezier(0.36, 0.66, 0.04, 1);
-		// -webkit-transition-property: opacity, -webkit-transform, box-shadow;
-		// transition-property: opacity, transform, box-shadow;
-		transition: all .3s cubic-bezier(0.36, 0.66, 0.04, 1);
-		transform: translateX(-50%);
+	//透明度渐变动画转场
+	.router-fade-enter-active, .router-fade-leave-active {
+	  	transition: opacity .3s;
 	}
-
-	.router-fade-leave-active {
-		transition: all .3s cubic-bezier(0.36, 0.66, 0.04, 1);
-		transform: translateX(-20%);
+	.router-fade-enter, .router-fade-leave-to {
+		opacity: 0;
 	}
-
-	.router-fade-enter {
-		transform: translateX(-100%);
-	}
-
-	.router-fade-leave-to {
-		transform: translateX(-40%);
-	}
-
 
 
 	//无动画转场
