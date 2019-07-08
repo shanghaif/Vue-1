@@ -71,9 +71,12 @@ class ListComponent extends HTMLElement {
         shadowRoot.innerHTML = `
             <style>${styles}</style>
             <ion-header translucent>
-            <ion-toolbar>
-                <ion-title>Nav</ion-title>
-            </ion-toolbar>
+                <ion-toolbar>
+                    <ion-buttons>
+                        <ion-back-button defaultHref="/"></ion-back-button>
+                    </ion-buttons>
+                    <ion-title>Nav</ion-title>
+                </ion-toolbar>
             </ion-header>
             <ion-content fullscreen>
                 <ion-list>
@@ -103,20 +106,17 @@ class ListComponent extends HTMLElement {
             */
 
            const item_detail = document.createElement('item-detail');
+           // 监听组件的自定义分发事件
+           item_detail.addEventListener('dataChanged', v => console.log(v));
+
            item_detail.tech = tech;
            nav.push(item_detail);
+
+
         }
         
         // 绑定事件(不使用闭包语法事件会立即执行...?)
         let items = this.shadowRoot.querySelectorAll('ion-item');
-        Array.from(items).forEach(item => {
-            item.addEventListener('click', function(index) {
-                return function() {
-                    showDetail(index);
-                }
-            }(1))
-        });
-
         (function(){
             var index = 0;
             while(items[index]) {

@@ -1,4 +1,4 @@
-# ionic-vue-app
+# 结合了@vue/ionic和Web Componnet，有导航、路由、web-componnet组件化和事件分发
 
 ## Project setup
 ```
@@ -24,6 +24,3 @@ npm run test
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

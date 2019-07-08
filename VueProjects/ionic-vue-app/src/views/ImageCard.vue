@@ -2,9 +2,12 @@
   <ion-app>
     <ion-header>
       <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/"></ion-back-button>
+        </ion-buttons>
         <ion-title>Hello, Ionic!</ion-title>
-        <ion-nav-back-button>
-        </ion-nav-back-button>
+        <!-- <ion-nav-back-button>
+        </ion-nav-back-button> -->
       </ion-toolbar>
     </ion-header>
     <ion-content>
