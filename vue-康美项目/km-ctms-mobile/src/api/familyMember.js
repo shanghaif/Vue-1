@@ -6,7 +6,7 @@ import request from '@/utils/request'
 
 /** 接口调用流程
  * 1.进入首页
- *     i.调用`getPersonInfo`(康美360的接口)获取`康美360`当前用户信息。
+ *     i.调用`km360App.js->getPersonInfo`(康美360的接口)获取`康美360`当前用户信息。
  *       获取信息后缓存信息！！！，用以每次点击按钮调用相关功能时判断用户信息是否完整，不完整都需要跳转到完善信息页面
  *    ii.调用`healthArchives.js->getBasicHealthArchivesInfo`(康美360H5的接口)获取`康美360H5`当前家庭成员的个人基础档案。
  *
@@ -16,23 +16,6 @@ import request from '@/utils/request'
  *   iii.切换成员后调用`healthArchives.js->getBasicHealthArchivesInfo`(康美360H5的接口)获取当前家庭成员的个人基础档案，其中的手机号、生日、地址等需要用到
  *
  */
-
-// 获取成员信息
-export function getPersonInfo() {
-  /* -3过期 -2-不合法 -1-异常发生 0-成功 3-错误 */
-  return request({
-    url: '/api/Patient/Info',
-    method: 'get'
-  })
-}
-
-export function updatePerson(data) {
-  return request({
-    url: '/person/update',
-    method: 'post',
-    data
-  })
-}
 
 // 切换家庭成员
 export function getSwitchFamilyMember(memberID) {
@@ -59,15 +42,6 @@ export function createperson(data) {
     data
   })
 }
-
-// //删除家庭成员
-// export function deleteperson(id) {
-//   return request({
-//     url: '/person/delete/',
-//     method: 'get',
-//     params: { id }
-//   })
-// }
 
 /** 判断手机号码或者身份证在家庭成员中是否存在
  * AccountType 1-手机号  2-身份证

@@ -6,6 +6,10 @@ import router from './router'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import echarts from 'echarts'
+import globalMixin from "@/mixins/global";
+import install from "@/utils/install";
+import "@/assets/styles/page/main.scss";
+import "@/styles/mint-ui.scss";  //自定义mint-ui样式
 
 import store from './store'
 import './icons' // icon
@@ -36,6 +40,7 @@ Vue.use(Vuelidate)
 Vue.prototype.$echarts = echarts
 
 Vue.use(MintUI)
+Vue.use(install);
 
 Vue.config.productionTip = false
 
@@ -43,6 +48,7 @@ new Vue({
   el: '#app',
   router,
   store,
+  mixins: [globalMixin],
   components: { App },
   template: '<App/>'
 })
