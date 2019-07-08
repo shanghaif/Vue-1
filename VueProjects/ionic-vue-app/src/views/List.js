@@ -1,3 +1,5 @@
+import './Detail'
+
 class ListComponent extends HTMLElement {
     constructor() {
         super();
@@ -74,84 +76,68 @@ class ListComponent extends HTMLElement {
             </ion-toolbar>
             </ion-header>
             <ion-content fullscreen>
-            <ion-list>
-            ${techs.map(tech => `
-                <ion-item button onclick="showDetail('${tech.title}')">
-                    <ion-icon slot="start" name="logo-${tech.icon}" style="color: ${tech.color};"></ion-icon>
-                    <ion-label>
-                    <h3>${tech.title}</h3>
-                    </ion-label>
-                </ion-item>
-            `).join('\n')}
-            </ion-list>
+                <ion-list>
+                ${techs.map(tech => `
+                    <ion-item button">
+                        <ion-icon slot="start" name="logo-${tech.icon}" style="color: ${tech.color};"></ion-icon>
+                        <ion-label>
+                        <h3>${tech.title}</h3>
+                        </ion-label>
+                    </ion-item>
+                `).join('\n')}
+                </ion-list>
             </ion-content>
         `;
         
         function showDetail(index){
             const nav = document.querySelector('ion-nav');
             const tech = techs[index];
-        
-            /** 重复定义  有错误 */
-            customElements.define('list-detail', class ListDetail extends HTMLElement {
-                connectedCallback() {
-                    this.innerHTML = `
-                    <ion-header translucent>
-                        <ion-toolbar>
-                            <ion-buttons slot="start">
-                                <ion-back-button defaultHref="/"></ion-back-button>
-                            </ion-buttons>
-                            <ion-title>${this.tech.title}</ion-title>
-                        </ion-toolbar>
-                    </ion-header>
-                    <ion-content fullscreen class="ion-padding">
-                        <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
-                        <p>${this.tech.description}</p>
-                    </ion-content>
-                    `;
-                }
-            });
-        
-            nav.push('list-detail', { tech });
-        }
 
-        // 绑定事件
+            /*
+            // 在`createElement`的时候构造函数就已经调用，所以构造函数里获取构造完后传的参数是读不到的
+            // 必须在组件内部把参数调用移动到初始化以后，即放在`connectedCallback`中调用
+            const item_detail = document.createElement('item-detail');
+            item_detail.tech = tech;
+            //item_detail.dataset.tech = JSON.stringify(tech);
+            nav.push(item_detail);
+            */
+
+           const item_detail = document.createElement('item-detail');
+           item_detail.tech = tech;
+           nav.push(item_detail);
+        }
+        
+        // 绑定事件(不使用闭包语法事件会立即执行...?)
         let items = this.shadowRoot.querySelectorAll('ion-item');
         Array.from(items).forEach(item => {
-            item.addEventListener('click', showDetail(1));
-        })
-        
+            item.addEventListener('click', function(index) {
+                return function() {
+                    showDetail(index);
+                }
+            }(1))
+        });
 
+        (function(){
+            var index = 0;
+            while(items[index]) {
+                const button = items[index];
+                button.addEventListener('click', function(index) {
+                    return function() {
+                        showDetail(index);
+                    }
+                }(index))
+                index ++;
+            }
+        })()
     }
 }
    
 // 注册 <list-component></list-component> 组件
 customElements.define('list-component', ListComponent)
 
-///////////////////////
-// 改造一下
-///////////////////////
-customElements.define('list-detail', class ListDetail extends HTMLElement {
-    connectedCallback() {
-        this.innerHTML = `
-        <ion-header translucent>
-            <ion-toolbar>
-                <ion-buttons slot="start">
-                    <ion-back-button defaultHref="/"></ion-back-button>
-                </ion-buttons>
-                <ion-title>${this.tech.title}</ion-title>
-            </ion-toolbar>
-        </ion-header>
-        <ion-content fullscreen class="ion-padding">
-            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
-            <p>${this.tech.description}</p>
-        </ion-content>
-        `;
-    }
-});
 
-
-
-/* 组件示例 */
+/*
+// 组件示例 
 const template = document.createElement('template');
 template.innerHTML = `<style> button, p { display: inline-block; } </style>
                     <button aria-label="decrement">-</button>
@@ -169,6 +155,7 @@ class XCounter extends HTMLElement {
         
     constructor() {
         super();
+
         this._value = 0;
         this.root = this.attachShadow({ mode: 'open' });
         this.root.appendChild(template.content.cloneNode(true));
@@ -180,10 +167,10 @@ class XCounter extends HTMLElement {
     }
 }    
 
-/* 注册组件
+// 注册组件
 customElements.define('x-counter', XCounter);
-*/
-/* 使用组件
+
+// 使用组件
 import 'counter.js';
 const counter = document.querySelector('x-counter');
 counter.value = 10;

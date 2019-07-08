@@ -22,9 +22,9 @@ export default new IonicVueRouter({
     //   component: () => import(/* webpackChunkName: "about" */ './views/List.vue')
     // },
     {
-      path: '/detail',
-      name: 'detail',
-      component: () => import(/* webpackChunkName: "about" */ './views/Detail.vue')
+      path: '/imageCard',
+      name: 'imageCard',
+      component: () => import(/* webpackChunkName: "about" */ './views/ImageCard.vue')
     }
   ]
 })

@@ -7,7 +7,7 @@
 <style src='@ionic/core/css/core.css'></style>
 <style src='@ionic/core/css/ionic.bundle.css'></style>
 <script>
-import { stringify } from 'querystring';
+// import { stringify } from 'querystring';
 export default {
   name: 'App',
   data() {
