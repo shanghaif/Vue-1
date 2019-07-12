@@ -1,68 +1,60 @@
 <template>
     <div class="basic-file">
       <ul>
-        <li class="clearfix">
-          <p class="red_start"><span>*</span>真实姓名</p>
+        <li class="clearfix" ref="realname">
+          <p class="red_star"><span>*</span>真实姓名</p>
           <div class="wb"></div>
           <input type="text" v-model.lazy="allData.Name"/>
         </li>
-        <li class="clearfix">
+        <li class="clearfix" v-show="showPhoneCell" ref="phone">
+          <p class="red_star"><span>*</span>手机号</p>
+          <div class="wb"></div>
+          <input type="number" maxlength="11" v-model.number="allData.Phone"/>
+        </li>
+        <li class="clearfix" ref="cardID">
           <p>身份证</p>
           <div class="wb"></div>
-          <input type="text" v-model.lazy="allData.PersonNo"/>
+          <input type="text" maxlength="18" v-model="allData.PersonNo"/>
         </li>
         <li class="clearfix">
-          <p class="red_start"><span>*</span>性别</p>
+          <p class="red_star"><span>*</span>性别</p>
           <div class="wb"><img src="@/assets/images/healthArchives/arrow.jpg" height="10" width="6"/></div>
-          <div class="pc-box" @click="openGenderPicker">
-            <input type="hidden" name="bank_id" id="bankId" value="" />
-            <span ref="genderData">请选择</span>
-          </div>
+          <div class="pc-box" ref="gender" @click="openGenderPicker">请选择</div>
         </li>
-        <li class="clearfix">
-          <p class="red_start"><span>*</span>出生年月</p>
+        <li class="clearfix" ref="birthDate">
+          <p class="red_star"><span>*</span>出生年月</p>
           <div class="wb"><img src="@/assets/images/healthArchives/arrow.jpg" height="10" width="6"/></div>
-          <div class="form-item item-line" id="selectDate">
-            <div class="pc-box" @click="openDatePicker">
-              <span data-year="" data-month="" data-date="" ref="birthDateData">请选择时间</span>
-            </div>
-          </div>
+          <date-picker :settingTime="allData.Birthdate" class="pc-box" @showTime="showTime"/>
+        </li>
+        <li v-show="showLivingAreaCell" class="clearfix">
+          <p>居住地</p>
+          <div class="wb"><img src="@/assets/images/healthArchives/arrow.jpg" height="10" width="6"/></div>
+          <area-picker class="pc-box" @showArea="showArea"/>
+        </li>
+        <li v-show="showLivingAddressCell" class="clearfix">
+          <p>详细地址</p>
+          <div class="wb"></div>
+          <input type="text" v-model.lazy="allData.DetailedAddress"/>
         </li>
         <li class="clearfix">
           <p>身高</p>
-          <div class="wb">cm</div>
+          <div class="wb" style="margin-right:5px;">cm</div>
           <input type="number" v-model="allData.Height" />
         </li>
         <li class="clearfix">
           <p>体重</p>
-          <div class="wb">kg</div>
+          <div class="wb" style="margin-right:5px;">kg</div>
           <input type="number" v-model="allData.Weight" />
         </li>
         <li class="clearfix">
           <p>婚姻史</p>
           <div class="wb"><img src="@/assets/images/healthArchives/arrow.jpg" height="10" width="6"/></div>
-          <div class="pc-box" @click="openMarriedPicker">
-            <input type="hidden" name="bank_id" id="marriageId" value="">
-            <span ref="marriageData">请选择</span>
-          </div>
+          <div class="pc-box" ref="marriageData" @click="openMarriedPicker">请选择</div>
         </li>
       </ul>
 
-      <input type="submit" value="保存" class="submit-btn" v-on:click="setPersonInfor"/>
+      <input type="submit" value="保存" class="submit-btn" v-on:click="saveButtonClicked"/>
     
-      <template>
-        <mt-datetime-picker
-          ref="datePicker"
-          type="date"
-          year-format="{value} 年"
-          month-format="{value} 月"
-          date-format="{value} 日"
-          v-model="datePickerValue"
-          :start-date="startDate"
-          :end-date="endDate"
-          @confirm="handleDateConfirm">
-        </mt-datetime-picker>
-      </template>
       <mt-actionsheet
         :actions="genderActions"
         v-model="genderSheetVisible">
@@ -76,20 +68,27 @@
 </template>
 
 <script>
-import { Toast,Picker,DatetimePicker,Actionsheet } from 'mint-ui'
-import { dateFormat,isCardNo } from '@/filters'
+import DatePicker from '@/components/DatePicker'
+import AreaPicker from '@/components/AreaPicker'
+import { Toast,DatetimePicker,Actionsheet,MessageBox } from 'mint-ui'
+import { dateFormat,isPhoneNo,isCardNo,isCardNoStrict,limitStringLength } from '@/filters'
 import { getBasicHealthArchivesInfo,postBasicHealthArchivesInfo } from '@/api/healthArchives'
+import { createFamilyMember,getFamilyMemberIsExists,getAccountIsExists } from '@/api/familyMember'
 
 export default {
       name: "BasicArchives",
+      components: { DatePicker, AreaPicker },
       data() {
         return {
+          showPhoneCell:false, //是否显示手机号输入框
+          showLivingAreaCell:false, //是否显示居住地选择框
+          showLivingAddressCell:false, //是否显示详细地址输入框
+
           proData:{},   //接收省份信息
           allData: {},  //省份以外的全部信息
 
-          datePickerValue:null,
-          startDate: new Date('1920-01-01'),
-          endDate: new Date(),
+          autoInputCardID: '', //标记账号，用来处理检测到账号已存在而连续弹窗的问题
+          autoInputName: '', //标记账号，用来处理检测到账号已存在而连续弹窗的问题
           
           genderActions: [
             { name: '男',indexValue:'1',method:this.selectGender },
@@ -106,18 +105,74 @@ export default {
         }
       },
       computed:{
-        cordNumber(){
-          return this.allData.PersonNo;
+        cardIDNumber(){
+          return this.allData.PersonNo
+        },
+        phoneNumber(){
+          return this.allData.Phone
         }
       },
       watch: {
-        cordNumber(val) {
-          if(val != "" && !isCardNo(val)){ Toast("请填写正确格式的身份证！") }
+        cardIDNumber(val) {
+          if(val != "" && val.length == 15 || val.length == 18){
+            if(isCardNoStrict(val)) {
+              var birthDate, gender
+              // 解析身份证的生日与性别
+              if(val.length === 15) {
+                birthDate = '19' + val.substr(6, 6)
+                gender = val.substr(val.length-1, 1)
+              }else{
+                birthDate = val.substr(6, 8)
+                gender = val.substr(val.length-2, 1)%2 === 1 ? '1' : '2'
+              }
+
+              // 提取身份证的生日、性别，调用回调函数刷新组件
+              this.showTime(birthDate.substring(0,4) + '-' + birthDate.substring(4,6) + '-' + birthDate.substring(6,8))
+              const genderIndex = parseInt(gender)%2 ? 0 : 1
+              this.selectGender(this.genderActions[genderIndex])
+
+              // 检测家庭成员是否已经存在
+              if(this.autoInputCardID && this.autoInputCardID === val) { return }
+              this.autoInputCardID = ''
+
+              const that = this;
+              getFamilyMemberIsExists(2,val)
+              .then(function(response){
+                that.familyMemberExistHandler(2, response,val)
+              })
+            }
+          }
+        },
+        phoneNumber(val) {
+          const tmpVal = val + ''
+          if(tmpVal != "" && tmpVal.length >= 11){ 
+            if(isPhoneNo(tmpVal)) {
+              // 检测家庭成员是否已经存在
+              if(this.autoInputPhone && this.autoInputPhone === tmpVal) { return }
+              this.autoInputPhone = ''
+
+              const that = this;
+              getFamilyMemberIsExists(1,tmpVal)
+              .then(function(response){
+                that.familyMemberExistHandler(1, response, tmpVal)
+              })
+            } else {
+              Toast("请填写正确格式的手机号！")
+            }
+          }
         },
       },
       mounted() {
-        // this.$store.state.app.pageTitle = '基础档案';
-        this.getBasicPersonInfo();
+        if(this.$route.params.pagetype === 'addMember'){
+          this.showPhoneCell = true;
+          this.showLivingAreaCell = true;
+          this.showLivingAddressCell = true;
+          this.$store.state.app.pageTitle = '新增成员';
+        } 
+        // 调查问卷、查看档案
+        else if(this.$route.params.pagetype == null){
+          this.getBasicPersonInfo();
+        }
       },
       methods: {
         openDatePicker() {
@@ -130,21 +185,19 @@ export default {
           this.marriedSheetVisible = true;
         },
 
-        handleDateConfirm(){ 
-          console.log(this.datePickerValue);
-
-          let dateDom = this.$refs.birthDateData;
-          if (this.datePickerValue != null) 
-            dateDom.innerText = dateFormat(this.datePickerValue,"yyyy-MM-dd");
+        showTime(time) { //选择生日回调
+          this.allData.Birthdate = time
         },
-
-        selectGender(value){
-          this.$refs.genderData.innerText = value.name;
-          this.$refs.genderData.dataset['id'] = value.indexValue;
+        showArea(province_city_area) { //选择居住地回调
+          this.allData.Address = province_city_area
         },
-        selectMarried(value){
+        selectGender(value){ //选择性别回调
+          this.$refs.gender.innerText = value.name;
+          this.allData.Gender = value.indexValue;
+        },
+        selectMarried(value){ //选择婚姻回调
           this.$refs.marriageData.innerText = value.name;
-          this.$refs.marriageData.dataset['id'] = value.indexValue;
+          this.allData.MarriageStatus = value.indexValue;
         },
 
         //获取基本信息
@@ -160,31 +213,16 @@ export default {
 
               //性别
               if(that.allData.Gender == 1) {
-                that.$refs.genderData.innerText = "男";
-                that.$refs.genderData.dataset['id'] = "1";
+                that.$refs.gender.innerText = "男";
               } else {
-                that.$refs.genderData.innerText = "女";
-                that.$refs.genderData.dataset['id'] = "2";
+                that.$refs.gender.innerText = "女";
               }
               //婚姻
               let marriageStatus = parseInt(that.allData.MarriageStatus);
               if (marriageStatus && marriageStatus < 90) {
-                that.$refs.marriageData.dataset['id'] = marriageStatus+'';
                 let textArr = ["未婚","已婚","丧偶","离婚"];
                 let index = marriageStatus/10 -1;
-                console.log(index);
                 that.$refs.marriageData.innerText = textArr[index];
-              }else {
-                that.$refs.marriageData.dataset['id'] = "90";
-              }
-              //出生日期
-              if(that.allData.Birthdate != null) {
-                let d1 = that.allData.Birthdate.split("T");
-                let d2 = d1[0].split("-");
-                that.$refs.birthDateData.innerText = d1[0];
-                that.$refs.birthDateData.dataset['year'] = d2[0];
-                that.$refs.birthDateData.dataset['month'] = d2[1];
-                that.$refs.birthDateData.dataset['date'] = d2[2];
               }
             }else{
               Toast(response.data.ReturnMessage);
@@ -194,24 +232,34 @@ export default {
           });
         },
 
-        //提交基本信心
-        setPersonInfor() {
+        // 提交基本信息/新增家庭成员
+        saveButtonClicked() {
+          // 需要验证输入的元素的容器 refs: ['realname', 'phone', 'cardID', 'gender', 'birthDate']
+
           if(this.allData.Name == null || this.allData.Name == "") {
-            Toast("请填写你的姓名！");
+            Toast("请填写你的真实姓名！");
+            this.warningAnimation(this.$refs.realname)
             return;
           }
-          if(this.allData.PersonNo != null && this.allData.PersonNo != "" ) {
-            if (!isCardNo(this.allData.PersonNo)) {
-              Toast("请填写正确格式的身份证！");
-              return;
-            }
+          if(this.allData.Phone == null || this.allData.Phone == "" || !isPhoneNo(this.allData.Phone)) {
+            Toast("请填写你的手机号！");
+            this.warningAnimation(this.$refs.phone)
+            return;
           }
-          if(this.$refs.genderData.innerHTML == "请选择") {
+          // if(this.allData.PersonNo != null && this.allData.PersonNo != "" ) {
+          //   if (!isCardNo(this.allData.PersonNo)) {
+          //     Toast("请填写正确格式的身份证！");
+          //     return;
+          //   }
+          // }
+          if(this.allData.Gender == null) {
             Toast("请选择你的性别！");
+            this.warningAnimation(this.$refs.gender)
             return;
           }
-          if(this.$refs.birthDateData.innerHTML == "请选择时间") {
+          if(this.allData.Birthdate == null) {
             Toast("请选择你的出生日期！");
+            this.warningAnimation(this.$refs.birthDate)
             return;
           }
           if(this.allData.Height > 250 || this.allData.Height < 40) {
@@ -222,17 +270,6 @@ export default {
             Toast("体重范围：1-220 kg！");
             return;
           }
-  
-          var m=this.$refs.birthDateData.dataset['month'] ;
-          var d=this.$refs.birthDateData.dataset['date'];
-          var bdate=this.$refs.birthDateData.dataset['year'] + "-" +m+ "-" +d;
-          var today=dateFormat(new Date(),"yyyy-MM-dd");
-          var birthDate="";
-          if(bdate==today) {
-              birthDate = this.$refs.birthDateData.innerHTML;
-          } else {
-              birthDate=bdate;
-          }
 
           let that = this;
           let upData = {
@@ -240,23 +277,94 @@ export default {
             PersonNo: that.allData.PersonNo,
             Height: that.allData.Height,
             Weight: that.allData.Weight,
-            MarriageStatus: this.$refs.marriageData.dataset['id'],
-            Gender: this.$refs.genderData.dataset['id'],
-            Birthdate:  birthDate,
+            MarriageStatus: that.allData.MarriageStatus,
+            Gender: that.allData.Gender,
+            Birthdate:  that.allData.BirthDate,
             Phone: that.allData.Phone
           };
 
-          postBasicHealthArchivesInfo(upData)
-          .then(function(response){
-              if (response.data.IsSuccess === true) {
-                Toast("保存成功！");
-              }else{
-                Toast(response.data.ReturnMessage);
-              }
-          }).catch(function(error){
-            Toast(error.message);
-          })
+          if(this.$route.params.pagetype === 'addMember'){ // 新增家庭成员
+            
+            createFamilyMember(upData)
+            .then(function(response){
+                if (response.data.IsSuccess === true) {
+                  Toast("新增家庭成员成功！");
+                }else{
+                  Toast(response.data.ReturnMessage);
+                }
+            }).catch(function(error){
+              Toast(error.message);
+            })
+
+          } else if(this.$route.params.pagetype == null){
+            // 提交基本信心
+            postBasicHealthArchivesInfo(upData)
+            .then(function(response){
+                if (response.data.IsSuccess === true) {
+                  Toast("保存成功！");
+                }else{
+                  Toast(response.data.ReturnMessage);
+                }
+            }).catch(function(error){
+              Toast(error.message);
+            })
+          }
+          
         },
+
+        warningAnimation(element) {
+          element.style.backgroundColor = 'rgba(255, 72, 72, 0.4)';
+          setTimeout(() => {
+            element.style.backgroundColor = 'transparent'
+          }, 1000);
+        },
+
+        // 检测家庭成员是否存在的回调，回调中再次检测了账号是否存在
+        familyMemberExistHandler(type, response, inputVal) {
+          if (response.data.IsSuccess === true) {
+            const data = response.data.ReturnData;
+            if(!!data && !!data.Name){ // 已有家庭成员,弹框提醒
+              console.log(data)
+
+              var tipMessage = (type===1?"手机号":"身份证号") + "已存在家庭档案中，姓名【" + data.Name + "】," + (data.PersonNo ? "身份证号【"+data.PersonNo+"】,":"") + "手机号【" + data.Phone + "】,请重新输入"
+              MessageBox.confirm(tipMessage).then(action => {
+                if(type === 1){
+                  this.allData.Phone = ''
+                }else if(type === 2) {
+                  this.allData.PersonNo = ''
+                }
+              });
+              this.isAccountExist = false
+            }else{
+              const that = this
+              // 检测该账号是否已存在
+              getAccountIsExists(type,inputVal)
+              .then(function(response){
+                const data = response.data.ReturnData;
+                if(!!data && !!data.Name){ // 已有该账号,弹框提醒
+                  console.log(data)
+
+                  var tipMessage = (type===1?"手机号":"身份证号") + "已存在账号系统中，姓名【" + data.Name + "】," + (data.PersonNo ? "身份证号【"+data.PersonNo+"】,":"") + "手机号【" + data.Phone + "】,请重新输入"
+                  MessageBox.confirm(tipMessage).then(action => {
+                    that.isAccountExist = true
+                    // 用返回的数据填入输入框
+                    that.allData = data
+                    that.autoInputPhone = data.Phone
+                    that.autoInputCardID = data.PersonNo
+                  }).catch(err => { 
+                    if (err == 'cancel') { //取消的回调
+                      if(type === 1){
+                        that.allData.Phone = ''
+                      }else if(type === 2) {
+                        that.allData.PersonNo = ''
+                      }
+                    } 
+                  });
+                }
+              })
+            }
+          }
+        }
       }
     }
 
@@ -278,7 +386,9 @@ export default {
   height: 1.28rem;
   line-height: 1.28rem;
   border-bottom: solid 1px #e7e7e7;
+  transition: background-color 0.8s ease-out;
 }
+
 .basic-file ul li p {
   width: 2.133333333333333rem;
   display: inline-block;
@@ -287,7 +397,7 @@ export default {
   text-align: left;
 }
 .basic-file ul li p span {
-  color: #ff4848;
+  color: rgb(255, 72, 72);
   margin-right: 0.16rem;
 }
 .basic-file ul li input {
@@ -301,7 +411,7 @@ export default {
   line-height: 1.226666666666667rem;
   border: none;
   outline: none;
-  background-color: #fff;
+  background-color: transparent;
 }
 .basic-file ul li .wb {
   width: 0.576rem;
@@ -312,6 +422,9 @@ export default {
   color: #aaa;
   margin-left: 2px;
 }
+.basic-file ul li .wb img {
+  margin-top: -2.5px;
+}
 .basic-file .phone-number-btn {
   width: 92%;
   margin-top: 1.333333333333333rem;
@@ -321,12 +434,12 @@ export default {
   text-align: right;
   color: #aaa;
   font-size: 0.4rem;
-  height: 1.2rem;
-  line-height: 1.226666666666667rem;
+  height: 1.28rem;
+  line-height: 1.28rem;
   float: right;
 }
 
-.red_start {
+.red_star {
   margin-left: -10px;
 }
 
@@ -341,4 +454,5 @@ export default {
   margin-bottom:20px;
   font-size: 0.4266666666666667rem;
 }
+
 </style>

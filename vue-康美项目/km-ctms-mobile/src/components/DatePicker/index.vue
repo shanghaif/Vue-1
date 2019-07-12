@@ -1,8 +1,8 @@
 <template>
-  <div class="dataTime">
-    <div @click="openPicker"><span v-if="time>0">{{ time | formatDate }}</span><span v-else>请选择时间</span></div>
+  <div class="picker-box">
+    <div @click="showPicker"><span v-if="time>0">{{ time | formatDate }}</span><span v-else>请选择时间</span></div>
     <mt-datetime-picker
-      ref="picker"
+      ref="dataPicker"
       :start-date="startDate"
       type="date"
       year-format="{value} 年"
@@ -13,11 +13,6 @@
 </template>
 
 <script>
-/**
-   Auth: liuemeifang
-   Created: 2019/3/14
-*/
-
 import { formatDate } from '../../filters'
 export default {
   name: 'DatePicker',
@@ -27,18 +22,21 @@ export default {
       return formatDate(date, 'yyyy-MM-dd')
     }
   },
+  props:['settingTime'], // 手动设置显示的时间
   data() {
     return {
       startDate: new Date(),
       time: null
     }
   },
-  mounted() {
-
+  watch: {
+    settingTime(val) {
+      this.time = new Date(val)
+    }
   },
   methods: {
-    openPicker() {
-      this.$refs.picker.open()
+    showPicker() {
+      this.$refs.dataPicker.open()
     },
     handleChange(value) {
       this.time = value
@@ -49,13 +47,13 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-.dataTime >>>.picker-toolbar
+.picker-box >>>.picker-toolbar
      bacakground-color:#f2f2f2 !important
      padding:0 5%
      margin:0 auto
-.dataTime  >>> .mint-datetime-cancel
+.picker-box  >>> .mint-datetime-cancel
     text-align:left
     color:#333
-.dataTime >>>.mint-datetime-confirm
+.picker-box >>>.mint-datetime-confirm
     text-align:right
 </style>
