@@ -11,7 +11,7 @@
                 </ul>
 
                 <div class="map-location clearfix" v-if="showIllList">
-                    <i class="icon-location" /> 您的居住地
+                    <i class="icon-location" /> {{myAddress}}
                 </div>
 
                 <ul class="map-legend clearfix" v-else>
@@ -60,7 +60,7 @@
 
     import areaMapData from "@/data/areaData_v2";
     import icon from "@/assets/images/icons/location.png";
-    import genderMap from "@/map/gender";
+    import genderMap from "@/map/h5-gender";
 
     const legend = {
         "1": {
@@ -112,6 +112,9 @@
     let el;
     let mc;
 
+    let canMove = false;
+    let tempIll;
+
     export default {
         data() {
             return {
@@ -121,6 +124,11 @@
                 illList: [],
                 provinceList: [],
                 showIllList: true,
+                current: {
+                    Province: "广东",
+                    ProvinceID: "440000000000"
+                },
+                currentAddress: {},
                 data: {
                     province: "",
                     provinceCode: "", //广东
@@ -128,15 +136,37 @@
                 }
             };
         },
+        computed: {
+            myAddress() {
+                let array = ["您的所在地"];
+                let currentAddress = this.currentAddress;
+
+                if(currentAddress.Province) {
+                    array.push(currentAddress.Province);
+                }
+
+                return array.join("-");
+            }
+        },
         mounted() {
+            document.getElementById("map").innerHTML = "";
             this.$root.setPageTitle("疾病地理功能");
 
             this.init();
             this.bindEvents();
 
-            this.getCurrentProvince().then(() => {
+            Promise.all([this.getPersonInfo(), this.getCurrentProvince()]).then(() => {
                 this.getIllnessList();
             });
+        },
+        beforeDestroy() {
+            canMove = false;
+
+            jsMap.destroy();
+
+            if(mc) {
+                mc.destroy();
+            }
         },
         methods: {
             //初始化
@@ -161,6 +191,10 @@
             },
             //拖动
             onPan(e) {
+                if(!canMove) {
+                    return;
+                }
+
                 if(e.type == "panstart") {
                     startX = transform.translate.x;
                     startY = transform.translate.y;
@@ -179,7 +213,15 @@
                     scale = transform.scale || 1;
                 }
 
-                transform.scale = scale * e.scale;
+                canMove = true;
+
+                let result = scale * e.scale;
+
+                if(result <= 1) {
+                    result = 1;
+                }
+
+                transform.scale = result;
 
                 this.updateElementTransform();
             },
@@ -202,6 +244,8 @@
             configMap(option) {
                 let self = this;
                 let size = document.getElementById("app").clientWidth;
+                let obj = this.getProvinceMapDataByName(this.current.Province);
+                let {key} = obj;
 
                 let options = Object.assign({
                     name: "china",
@@ -215,10 +259,10 @@
                     zoom: {
                         disabled: true,
                         max: 5,
-                        zoomRange: true,
-                        wheelZoom: true
+                        zoomRange: false,
+                        wheelZoom: false
                     },
-                    selected: ["guangdong"],
+                    selected: [key],
                     areaName: {
                         show: true,
                         size: 12,
@@ -228,10 +272,11 @@
                     // 禁用默认交互效果
                     // 此时只有点击标注图标才会有事件触发[ 禁用的地区不会触发点击事件 ]
                     defaultInteractive: true,
+                    tip: false,
                     marker: {
                         disabled: false,
                         icon,
-                        data: ["guangdong"],
+                        data: [key],
                         click: function(id, name) {
                             self.provinceClickHandle(id, name);
                         }
@@ -242,6 +287,20 @@
                 }, option);
 
                 jsMap.config("#map", mapData, options);
+            },
+            //获取用户信息
+            getPersonInfo() {
+                return this.$ajax({
+                    type: "get",
+                    request: {
+                        name: "getPersonInfo"
+                    },
+                    data: {}
+                }).then((res) => {
+                    let {Gender} = res.ReturnData;
+
+                    this.gender = this.$utils.getMapKey(genderMap, Gender) || this.gender;
+                });
             },
             //根据手机号获取所在省
             getCurrentProvince() {
@@ -274,13 +333,12 @@
                     let obj = res.ReturnData;
 
                     if(!obj.Province) {
-                        obj = {
-                            Province: "广东",
-                            ProvinceID: "440000000000"
-                        };
+                        obj = this.current;
                     }
 
                     let current = this.getProvinceMapDataByName(obj.Province);
+
+                    this.current = obj;
 
                     this.data = {
                         ...this.data,
@@ -289,14 +347,16 @@
                         diseaseName: ""
                     };
 
+                    this.currentAddress = res.ReturnData;
+
                     callback(current.key);
                 }, () => {
-                    let obj = this.getProvinceMapDataByName("广东省");
+                    let obj = this.current;
 
                     this.data = {
                         ...this.data,
-                        province: "广东",
-                        provinceCode: "440000000000", //广东
+                        province: obj.Province,
+                        provinceCode: obj.ProvinceID,
                         diseaseName: ""
                     };
 
@@ -322,6 +382,12 @@
             //性别切换
             genderSwitch(item) {
                 this.gender = item.key;
+
+                if(this.showIllList) {
+                    this.getIllnessList();
+                } else {
+                    this.illHandle(tempIll);
+                }
             },
             //点击省份地图
             provinceClickHandle(id, name) {
@@ -344,6 +410,8 @@
             },
             //点击疾病
             illHandle(item) {
+                tempIll = item;
+
                 this.$ajax({
                     type: "get",
                     request: {
@@ -366,6 +434,8 @@
             //点击列表里的省份名称
             provinceHandle(item) {
                 let obj = this.getProvinceMapDataByName(item.Name);
+                let tempProvince = item;
+
                 this.data = {
                     ...this.data,
                     province: item.Name,
@@ -412,7 +482,6 @@
                     let obj = this.getProvinceMapDataByName(n.Name);
                     let {key} = obj;
                     let color = this.$utils.getMapProp(legend, n.Level, "color");
-
 
                     fill.basicColor[key] = color;
                     fill.hoverColor[key] = color;
