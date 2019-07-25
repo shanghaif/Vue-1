@@ -47,22 +47,30 @@ export default {
       this.bloodPressure.ExamTime = time
     },
     saveData() {
-      saveBloodPressure(this.bloodPressure).then(() => {
-        if (this.bloodPressure.Systolic == null || this.bloodPressure.Diastolic == null || this.bloodPressure.ExamTime == null) {
-          Toast('不能为空')
-        } else {
-          Toast({
-            title: '成功',
-            message: '保存成功',
-            type: 'success',
-            duration: 2000
-          })
+      let that = this;
+      if (that.bloodPressure.Systolic == null || that.bloodPressure.Diastolic == null || that.bloodPressure.ExamTime == null) {
+          Toast('不能为空');
+          return;
+      }
+      saveBloodPressure(that.bloodPressure).then(response => {
+         let data = response.data;
+         if (data.IsSuccess) {
+              Toast({
+              title: '成功',
+              message: '保存成功',
+              type: 'success',
+              duration: 2000
+            });
+            that.$router.push({path:"/healthRecord"});
+          }else{
+             Toast(data.ReturnMessage);
         }
-        console.log(this.bloodPressure)
-        this.listLoading = false
+        console.log(that.bloodPressure);
+        that.listLoading = false;
       }, error => {
-        console.log('[error] ' + error) // for debug
-        this.listLoading = false
+        console.log('[error] ' + error); // for debug
+        that.listLoading = false;
+        Toast(error.message);
       })
     }
   }
@@ -73,6 +81,7 @@ export default {
   @import '~@/assets/styles/varibles.styl'
   .manual_bg
      background-color: #f5f5f5
+     margin-top: 40px
      padding-top:px2rem(20)
      &>ul
        background: #ffffff

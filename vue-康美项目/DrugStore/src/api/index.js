@@ -1,4 +1,4 @@
-const hostUrl = "http://pnrnzu.natappfree.cc";
+const hostUrl = "http://brn5i8.natappfree.cc";
 // const hostUrl = "";
 
 let currentPage = 1;
