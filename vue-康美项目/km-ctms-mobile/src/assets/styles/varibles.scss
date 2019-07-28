@@ -3,6 +3,7 @@
     $rem: $px / $per-rem;
 
     @return $rem + rem;
+}
 
 //字体
 $font-size-small: px2rem(24);
