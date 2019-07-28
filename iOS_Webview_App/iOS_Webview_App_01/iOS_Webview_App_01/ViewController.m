@@ -81,11 +81,13 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
     
-//    [_webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://10.2.24.108/elm"]]];
-    NSString * bundlePath = [[NSBundle mainBundle] resourcePath];
-    NSString *filePath = [NSString stringWithFormat:@"%@/elm/index.html", bundlePath];
-    NSURL *url = [NSURL fileURLWithPath:filePath];
-    [_webview loadRequest:[NSURLRequest requestWithURL:url]];
+    // http://192.168.1.105/elm
+    // http://192.168.1.105:8080
+    [_webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://192.168.1.105:8080"]]];
+//    NSString * bundlePath = [[NSBundle mainBundle] resourcePath];
+//    NSString *filePath = [NSString stringWithFormat:@"%@/elm/index.html", bundlePath];
+//    NSURL *url = [NSURL fileURLWithPath:filePath];
+//    [_webview loadRequest:[NSURLRequest requestWithURL:url]];
     [self.view addSubview:_webview];
     
     //手势遮罩

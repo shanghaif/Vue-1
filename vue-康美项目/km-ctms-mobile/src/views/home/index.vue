@@ -1,5 +1,5 @@
 <template>
-  <div class="home clearfix">
+  <div class="home page-box clearfix">
     <a class="km-header-bar" href="../../static/login_H5&360App.html" style="color:white;">登录</a>
     <banner />
     <health-record />
@@ -45,24 +45,8 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.home {
-  background:#fafafa;
-  margin-top: 40px;
-}
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+<style lang="scss" scoped>
+  .home>a {
+    display: none
+  }
 </style>

@@ -5,54 +5,85 @@
     @return $rem + rem;
 }
 
-//字体
-$font-size-small: px2rem(24);
-$font-size-base: px2rem(28);
-$font-size-medium: px2rem(32);
-$font-size-big: px2rem(36);
-$font-size-large: px2rem(40);
-$font-size-xl: px2rem(44);
-$font-size-xxl: px2rem(48);
+/*
+ * 设备判断
+*/ 
+$breakpoints: (
+	'xs': 'only screen and ( min-width: 480px)',
+  	'sm': 'only screen and ( min-width: 768px)',
+  	'md': 'only screen and ( min-width: 992px)',
+  	'lg': 'only screen and ( min-width: 1200px)',
 
-//文字颜色
-$text-body-primary: #666;
-$text-body-second: #333;
+	'iPhone4S': 'only screen and (device-height:480px) and (-webkit-min-device-pixel-ratio:2)',
+	'iPhone5': 'only screen and (device-height:568px) and (-webkit-min-device-pixel-ratio:2)',
+	'iPhone6_7_8': 'only screen and (device-height:667px) and (-webkit-min-device-pixel-ratio:2)',
+	'iPhone6P_7P_8P': 'only screen and (device-height:736px) and (-webkit-min-device-pixel-ratio:2)',
+	'iPhone_X_Xs': 'only screen and (device-width: 375px) and (device-height: 812px)',
+	'iPhone_XsMax': 'only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-min-device-pixel-ratio:3)',
+	'iPhone_XR': 'only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-min-device-pixel-ratio:2)',
+) !default;
 
-$text-primary: #2283f5;
-$text-success: #67C23A;
-$text-info: #71ACFF;
-$text-warning: #f09b06;
-$text-danger: #FF5050;
-$text-mute: #9f9f9f;
+@mixin respond-to($breakpoint_list) {
+	@each $breakpoint in $breakpoint_list {
+		$query: map-get($breakpoints, $breakpoint);
+		// 这里是scss error提示估计大部分人（包括我）都没怎么使用过
+		@if not $query {
+		@error 'No value found for `#{$breakpoint}`. Please make sure it is 
+		defined in `$breakpoints` map.';
+		}
+		// 具体断点解释在这里，作者比较严谨，校验了$query合法性
+		@media #{if(type-of($query) == 'string', unquote($query), inspect($query))}
+		{
+			@content;
+		}
+	}
+}
 
-//其他颜色
-$blue:#324157;
-$light-blue:#3A71A8;
-$red:#C03639;
-$pink: #E65D6E;
-$green: #30B08F;
-$tiffany: #4AB7BD;
-$yellow:#FEC171;
-$panGreen: #30B08F;
+//快捷設置
+@mixin border($borderWidth: 1px, $borderStyle: solid, $borderColor: $border-color-base) {
+    border: $borderWidth $borderStyle $borderColor;
+}
 
-//边框
-$border-color-base: #ddd;
-$border-radius-base: 4px;
-$border-radius-sm: 2px;
-$border-radius-md: 5px;
+//圓角
+@mixin radius($radius: $border-radius-base) {
+    border-radius: $radius;
+}
 
-//链接
-$link-color-base: #108ee9;
+//行高與高度一致
+@mixin same-height($height) {
+    height: $height;
+    line-height: $height;
+}
 
-//图片
-$img-size: 70px;
-$img-size-sm: 60px;
+//设置定位位置
+@mixin position-set($set) {
+    $len: length($set);
 
-//屏幕
-$screen-sm: 768px !default;
-$screen-md: 992px !default;
-$screen-lg: 1200px !default;
+    @if $len >= 1 {
+        top: nth($set, 1);
+    }
 
-$screen-sm-min: $screen-sm !default;
-$screen-md-min: $screen-md !default;
-$screen-lg-min: $screen-lg !default;
+    @if $len >= 2 {
+        right: nth($set, 2);
+    }
+
+    @if $len >= 3 {
+        bottom: nth($set, 3);
+    }
+
+    @if $len >= 4 {
+        left: nth($set, 4);
+    }
+}
+
+@mixin layout-absolute($set:auto auto auto auto, $zIndex: 2) {
+    position: absolute;
+    @include position-set($set);
+    z-index: $zIndex;
+}
+
+@mixin layout-fixed($set:auto auto auto auto, $zIndex: 2) {
+    position: fixed;
+    @include position-set($set);
+    z-index: $zIndex;
+}
