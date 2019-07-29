@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <!--导航-->
     <ul class="nav clearfix">
@@ -43,7 +43,7 @@
             <div class="img-box"><img v-bind:src="item.Image" /></div>
             <h6>{{item.ProductName}} {{item.Specifications ? '('+item.Specifications+')' : ''}}</h6>
             <p>{{item.Remark}}</p>
-            <div class="price-box"><h6>￥{{item.Price || '-'}}<strike>{{item.originalcost ? '￥'+item.originalcost : ''}}</strike><span>已卖出{{item.Salesvolume || '-'}}件</span></h6></div>
+            <div class="price-box" v-if="item.Price"><h6>￥{{item.Price || '-'}}<strike>{{item.originalcost ? '￥'+item.originalcost : ''}}</strike><span>已卖出{{item.Salesvolume || '-'}}件</span></h6></div>
           </li>
         </ul>
       </li>
