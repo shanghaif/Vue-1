@@ -136,4 +136,5 @@ export default {
      padding-right:px2rem(5)
      vertical-align :top
      color:#b5b5b5
+
 </style>

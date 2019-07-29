@@ -7,9 +7,7 @@
 				</li>
 			</ul>
 		</div>
-		<keep-alive>
-			<router-view/>
-		</keep-alive>
+		<router-view/>
 	</div>
 </template>
 
@@ -35,7 +33,7 @@ export default {
 	beforeRouteUpdate (to, from, next) {
 	    //点击返回按钮后跳到首页
 	    if (Object.keys(to.params).length <= 0) {
-	      this.$router.back('/');
+	      this.$router.back();
 	    }else{
 	      next();
 	    }
