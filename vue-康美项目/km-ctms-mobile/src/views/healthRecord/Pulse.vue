@@ -39,9 +39,9 @@ export default {
       heartRateRecord: {
         'RateList': [],
         'CheckTimeList': [],
-        'Rate': 88,
-        'LastTestTime': '2018-11-20T10:56:43',
-        'Result': '正常',
+        'Rate': null,
+        'LastTestTime':null,
+        'Result': null,
         'Imei': null,
         'ExamTime': null,
         'WeekTestCount': 0,

@@ -44,7 +44,7 @@ export default {
         SugarList: [],
         CheckTimeList: [],
         SugarTypeList: [],
-        Sugar: 3.1,
+        Sugar: null,
         LastTestTime: null,
         Result: null,
         Imei: null,

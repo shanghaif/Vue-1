@@ -31,7 +31,7 @@ export default {
     return {
       h: document.documentElement.clientHeight || document.body.clientHeight,
       items: [{ name: '血氧', data: [] }],
-      lastTime: '2017-10-19 10:23',
+      lastTime:null,
       min: 0,
       max: 100,
       interval: 10, // 间隔

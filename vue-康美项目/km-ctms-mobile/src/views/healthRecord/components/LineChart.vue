@@ -84,7 +84,7 @@ export default {
         left: 'right',
         subtext: ''
       }, {
-        text: formatDate(new Date(this.lastTime), 'yyyy-MM-dd hh:mm'),
+        text: this.lastTime != null ? formatDate(new Date(this.lastTime), 'yyyy-MM-dd hh:mm'):'',
         textStyle: {
           color: '#666', // 颜色
           fontWeight: 'normal', // 粗细
