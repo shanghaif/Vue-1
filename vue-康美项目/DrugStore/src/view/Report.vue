@@ -572,6 +572,56 @@
 </script>
 <style scoped>
 
+  .health-product {
+    width: 100%;
+    max-width: 10rem;
+    margin: 0 auto;
+  }
+
+  .health-product li {
+    width: 96%;
+    margin: 0.4rem auto;
+    text-align: left;
+  }
+
+  .health-product li:nth-child(1) {
+    margin-top: 0;
+  }
+
+  .health-product li .img-box {
+    width: 30%;
+    height: 2.133333333333333rem;
+    border-radius: 0.1066666666666667rem;
+    border: solid 1px #d2d2d2;
+    display: inline-block;
+    float: left;
+    overflow: hidden;
+  }
+
+  .health-product li .img-box img {
+    width:100%;
+	  height:auto;
+  }
+
+  .health-product li h6 {
+    width: 69%;
+    display: inline-block;
+    float: left;
+    font-size: 0.4266666666666666rem;
+    font-weight: normal;
+    line-height: 0.64rem;
+    text-indent: 0.2666666666666667rem;
+  }
+
+  .health-product li p {
+    width: 69%;
+    display: inline-block;
+    float: right;
+    font-size: 0.32rem;
+    color: #999;
+    text-indent: 0.2666666666666667rem;
+  }
+
   .score h6 {
     font-size: 1.333333333333333rem;
   }
