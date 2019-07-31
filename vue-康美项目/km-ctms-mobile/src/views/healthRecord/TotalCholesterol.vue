@@ -4,7 +4,7 @@
         <h2 class="lately_title">最近胆固醇</h2>
         <ul>
            <li>
-             <p>{{ TCRecord.MonitorData }}<span>mmol/L</span>  </p>
+             <p>{{ TCRecord.MonitorData > 0 ? TCRecord.MonitorData:'' }}<span>mmol/L</span>  </p>
            </li>
            <li>
              <p class="tc-status">{{ TCRecord.Result }}</p>

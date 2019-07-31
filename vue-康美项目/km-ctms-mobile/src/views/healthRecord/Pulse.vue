@@ -4,7 +4,7 @@
       <h2 class="lately_title">最近心率</h2>
       <ul>
         <li>
-          <p>{{ heartRateRecord.Rate }}<span>次/分</span></p>
+          <p>{{ heartRateRecord.Rate > 0 ? heartRateRecord.Rate:'' }}<span>次/分</span></p>
         </li>
         <li>
           <p class="blood-status">{{ heartRateRecord.Result }}</p>

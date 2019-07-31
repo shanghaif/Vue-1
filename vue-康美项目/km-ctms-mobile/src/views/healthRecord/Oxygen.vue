@@ -4,7 +4,7 @@
       <h2 class="lately_title">最近血氧</h2>
       <ul>
         <li>
-          <p>{{ bloodOxygenRecord.Oxygen }}<span>%</span></p>
+          <p>{{ bloodOxygenRecord.Oxygen > 0 ? bloodOxygenRecord.Oxygen:'' }}<span>%</span></p>
         </li>
         <li>
           <p class="blood-status">{{ bloodOxygenRecord.Result }}</p>
