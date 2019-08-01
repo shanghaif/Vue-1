@@ -39,9 +39,9 @@
         <div class="textTitle" v-html="textTitle[1].text"></div>
         <ul class="health-product">
           <li v-for="item in healthProduct" class="clearfix" @click="gotoProductURL(item.ProductURl)">
-          <!-- <li v-for="item in healthProduct" class="clearfix"> -->
             <div class="img-box"><img v-bind:src="item.Image" /></div>
-            <h6>{{item.ProductName}} {{item.Specifications ? '('+item.Specifications+')' : ''}}</h6>
+            <h6>{{item.ProductName}}</h6>
+            <p>{{item.Specifications}}</p>
             <p>{{item.Remark}}</p>
             <div class="price-box" v-if="item.Price"><h6>￥{{item.Price || '-'}}<strike>{{item.originalcost ? '￥'+item.originalcost : ''}}</strike><span>已卖出{{item.Salesvolume || '-'}}件</span></h6></div>
           </li>
@@ -580,6 +580,7 @@
 
   .health-product li {
     width: 96%;
+    height: 2.333333333rem;
     margin: 0.4rem auto;
     text-align: left;
   }
@@ -599,27 +600,34 @@
   }
 
   .health-product li .img-box img {
-    width:100%;
-	  height:auto;
+    width: auto;
+    height: 100%;
+    margin: 0 auto;
+    display: table-cell;
+    text-align: center;
+    vertical-align: center;
   }
 
   .health-product li h6 {
     width: 69%;
     display: inline-block;
     float: left;
-    font-size: 0.4266666666666666rem;
+    font-size: 0.4rem;
     font-weight: normal;
-    line-height: 0.64rem;
+    line-height: 0.55rem;
     text-indent: 0.2666666666666667rem;
   }
 
   .health-product li p {
-    width: 69%;
+    width: 69%; 
     display: inline-block;
     float: right;
     font-size: 0.32rem;
+    line-height: 0.55rem;
     color: #999;
     text-indent: 0.2666666666666667rem;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .score h6 {
@@ -630,14 +638,10 @@
     font-size: 0.3466666666666667rem;
   }
 
-  .cl33 {
-    color: #333;
-  }
-
-  .clearfix > h6 {
+  /* .clearfix > h6 {
     white-space: nowrap;
     overflow: hidden;
-  }
+  } */
 
   .clearfix > .price-box {
     display: inline;
@@ -647,9 +651,9 @@
 
   .clearfix > .price-box > h6 {
     width: 100%;
-    line-height: 1.13rem;
-    top: -25%;
-    transform: translateY(25%);
+    line-height: 0.7rem;
+    /* top: -25%; */
+    /* transform: translateY(25%); */
     color: #ff4848;
   }
 
