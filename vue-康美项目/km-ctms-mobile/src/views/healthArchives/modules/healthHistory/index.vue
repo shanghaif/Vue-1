@@ -1,10 +1,10 @@
 <template>
 <keep-alive>
-  <div class="content-box">
+  <div class="content-box normal-page-box">
     <h5>家族病史<span> 您的父母亲、兄弟姐妹、祖父母是否患有以下疾病?</span></h5>
     <ul class="selections_ul" id="fSelectList">
       <li id="0" @click="fItemClicked">无</li>
-      <li v-for="item in diseaseList" v-bind:id="item.HealthTypeID" @click="fItemClicked">{{item.HealthTypeName}}</li>
+      <li v-for="(item,index) in diseaseList" :key="index" :id="item.HealthTypeID" @click="fItemClicked">{{item.HealthTypeName}}</li>
     </ul>
 
     <div id="gxyBox" class="switchItemBox" style="display: none">
@@ -44,14 +44,15 @@ export default {
   name: "HealthHistory",
   data() {
     return {
+      memberId: '',
+
       diseaseList: {},
       BothDiabetes: false,
       BothHypertensive: false,
     }
   },
   mounted() {
-    // this.$store.state.app.pageTitle = '健康史';
-    this.getData();
+    this.$store.state.app.pageTitle = '健康史'
   },
   methods: {
     //家庭病史
@@ -133,42 +134,51 @@ export default {
     },
 
     //获取数据
-    getData() {
+    loadData() {
       let that = this;
-      getHealthTypes().then(function(response){
+      getHealthTypes(that.memberId).then(function(response){
         if (response.data.IsSuccess === true) {
           that.diseaseList = response.data.ReturnData;
-
-          getHealthHistory().then(function (resp) {
+          
+          getHealthHistory(that.memberId).then(function (resp) {
             if (resp.data != null) {
-              var data = resp.data;
+              var data = resp.data.ReturnData;
               
               let fSelectList = document.getElementById('fSelectList');
               let dSelectList = document.getElementById('dSelectList');
-              if (data.FHealthCategoryIDs.length>2) {
-                var idString = data.FHealthCategoryIDs;
-                idString = idString.substring(1,idString.length-1);
-                idString = idString.replace(" ","");
-                var idArray = idString.split(',');
-                
-                for(var i = 0; i < idArray.length; i++){
-                  let eid = idArray[i];
-                  let element = fSelectList.querySelector("li[id=\"\\31 "+ eid.substring(1,eid.length)+"\"]");
+              
+              let FHealthCategoryIDs = data.FHealthCategoryIDs
+              if (!!FHealthCategoryIDs && FHealthCategoryIDs.length > 0) {
+                if (FHealthCategoryIDs[0] === 0) {
+                  let element = fSelectList.querySelector("li[id=\"0\"]");
                   element.classList.add("active");
+                } else {
+                  var idArray = data.FHealthCategoryIDs;
+                  
+                  for(var i = 0; i < idArray.length; i++){
+                    let eid = idArray[i]
+                    let element = fSelectList.querySelector("li[id=\"" + eid + "\"]");
+                    if (!!element) {
+                      element.classList.add("active");
+                    }
+                  }
                 }
               }
               
-              if (data.DHealthCategoryIDs.length>2) {
-                var idString = data.DHealthCategoryIDs;
-                idString = idString.substring(1,idString.length-1);
-                idString = idString.replace(" ","");
-                var idArray = idString.split(',');
-
-                let selectList = document.getElementById('dSelectList');
-                for(var i = 0; i < idArray.length; i++){
-                  let eid = idArray[i];
-                  let element = dSelectList.querySelector("li[id=\"\\31 "+ eid.substring(1,eid.length)+"\"]");
+              let DHealthCategoryIDs = data.DHealthCategoryIDs
+              if (!!DHealthCategoryIDs && DHealthCategoryIDs.length > 0) {
+                if (FHealthCategoryIDs[0] === 0) {
+                  let element = dSelectList.querySelector("li[id=\"0\"]");
                   element.classList.add("active");
+                } else {
+                  var idArray = DHealthCategoryIDs
+                  for(var i = 0; i < idArray.length; i++){
+                    let eid = idArray[i];
+                    let element = dSelectList.querySelector("li[id=\""+  eid + "\"]");
+                    if (!!element) {
+                      element.classList.add("active");
+                    }
+                  }
                 }
               }
 
@@ -180,28 +190,29 @@ export default {
               if (li_g.className == "active") {
                 document.getElementById('gxyBox').style.display = 'block';
               }
-
+              
               //是否父母都有糖尿病史 true：是，false 否
               that.BothDiabetes = data.BothDiabetes;
               let element_t;
               let bothDiabetes = document.getElementById('diabetes_ul');
-              if (that.BothDiabetes === 'true') {
+              if (that.BothDiabetes === true) {
                 element_t = bothDiabetes.children[0];
-              } else if (that.BothDiabetes === 'false') {
+              } else {
                 element_t = bothDiabetes.children[1];
               }
               element_t.classList.add("active");
-
+              
               //是否父母都有高血压史 true：是，false 否
               that.BothHypertensive = data.BothHypertensive;
               let element_g;
               let bothHypertensive = document.getElementById('gxy_ul');
-              if (that.BothHypertensive === 'true') {
+              if (that.BothHypertensive === true) {
                 element_g = bothHypertensive.children[0];
-              } else if (that.BothHypertensive === 'false') {
+              } else {
                 element_g = bothHypertensive.children[1];
               }
               element_g.classList.add("active");
+              
             }else{
               Toast(resp.data.ReturnMessage);
             }
@@ -238,26 +249,27 @@ export default {
       };
       console.log(upData);
       postHealthHistory(upData).then(function(response){
-        if (response.data.data === "success") {
+        if (response.data.IsSuccess === true) {
             Toast("保存成功！");
         }else{
           Toast(response.data.ReturnMessage);
-          console.log(response);
         }
-      }).catch(function(error){
-        Toast(error);
-      });
+      })
     },
-
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.memberId = to.params.memberId
+      vm.loadData()
+    })
   }
 }
 </script>
 
 <style scoped>
-div {
-  width: 92%;
-  margin: 0 auto;
-  padding-top: 0.2rem;
+
+.content-box {
+  padding: 0.1rem 0.3rem;
 }
 div h4 {
   font-size: 0.4rem;
@@ -268,7 +280,6 @@ div h4 {
   display: inline-block;
   vertical-align: middle;
 }
-
 h5 {
   font-size: 0.4266666666666667rem;
   color: #ff9600;

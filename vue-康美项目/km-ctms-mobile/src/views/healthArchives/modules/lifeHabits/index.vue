@@ -1,7 +1,7 @@
 <template>
     <div>
-      <ul class="living-habit">
-        <li class="row-background" v-for="item in liveData"  v-on:click="toUrl(item.to)" >
+      <ul class="living-habit normal-page-box">
+        <li class="row-background" v-for="item in liveData"  v-on:click="toUrl(item)" >
           <div class="ul-center">
             <ul>
               <li class="li01"><img v-bind:src="item.img" class="listImg"></li>
@@ -31,58 +31,70 @@ export default {
   name: "LivingHabit",
   data() {
     return {
+      memberId: '',
+
       liveData: {
         "0": {
           text:"饮食习惯",
           img: require("@/assets/images/healthArchives/life1@2x.png"),
-          percent: "10",
+          percent: "0",
+          name: 'EatingHabits',
           to: "/healthArchives/lifeHabits/eatingHabits"
         },
         "1": {
           text:"体力活动与运动",
           img: require("@/assets/images/healthArchives/life2@2x.png"),
-          percent: "10",
+          percent: "0",
+          name: 'Labor',
           to: "/healthArchives/lifeHabits/labor"
         },
         "2": {
           text:"吸烟饮酒",
           img: require("@/assets/images/healthArchives/life3@2x.png"),
-          percent: "10",
-          to: "/healthArchives/lifeHabits/Drinking&Smoking"
+          percent: "0",
+          name: 'Drinking&Smoking',
+          to: "/healthArchives/lifeHabits/drinking&Smoking"
         },
       }
     }
   },
   mounted() {
-    // this.$store.state.app.pageTitle = '生活习惯';
-    this.getLivingHabit();
+    this.$store.state.app.pageTitle = '生活习惯';
   },
   methods: {
-    toUrl(path) {
-      this.$router.push({ path: path })
+    toUrl(item) {
+      this.$router.push({ name: item.name, params:{memberId: this.memberId} })
     },
     
-    getLivingHabit() {
+    loadData() {
       let that = this;
-      getLifeHabitsInfo()
-      .then(function(response){
-        if (!response.data.IsSuccess) {
-          that.liveData[0].percent = response.data.ReturnData.Diet;
-          that.liveData[1].percent = response.data.ReturnData.Motion;
-          that.liveData[2].percent = response.data.ReturnData.SmokeDrink;
-        }else {
+      getLifeHabitsInfo(that.memberId).then(function(response){
+        if (response.data.IsSuccess) {
+          that.liveData[0].percent = response.data.ReturnData.Diet || '0';
+          that.liveData[1].percent = response.data.ReturnData.Motion || '0';
+          that.liveData[2].percent = response.data.ReturnData.SmokeDrink || '0';
+        } else {
           Toast(response.data.ReturnMessage);
+          console.log(JSON.stringify(that.liveData))
         }
-      }).catch(function(error){
-        Toast(error.message);
-      });
+      })
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (!vm.memberId) {
+        vm.memberId = to.params.memberId
+      }
+      vm.loadData()
+    })
   }
 }
 </script>
 
 <style scoped>
-
+.living-habit {
+  padding-top: 0.1rem;
+}
 .living-habit .row-background {
   background: linear-gradient(105deg, transparent 45px, #fff 0);
   border: none;

@@ -89,7 +89,7 @@
             <div class="swiper-wrapper">
 
               <div class="swiper-slide">
-                <goods-suggest :suggestionData="mentalSuggestion" />
+                <goods-suggest :suggestionData="goodsSuggestion" />
               </div>
 
               <div class="swiper-slide">
@@ -149,6 +149,7 @@ export default {
       socialHealthScore:0,
       showScoreTips: false,
 
+      goodsSuggestion:'',
       dietSuggestion:'',
       dietSuggestionDetail:'',
       sportSuggestion:'',
@@ -167,7 +168,7 @@ export default {
     this.$store.state.app.pageTitle = '健康评估'
     this.loadData();
 
-    window.addEventListener('scroll',this.scrollHandle,true);
+    window.addEventListener('scroll',this.scrollHandle);
   },
   methods: {
     //创建滑动
@@ -203,10 +204,10 @@ export default {
     },
 
     gotoHealthAdvisory() {
-      // this.$router
+      this.$root.actionToNative('gotoDoctorOnline', '在线问诊')
     },
     gotoFinishArchieve() {
-      // this.$router
+      this.$router.push('/healthArchives')
     },
 
     loadData() {
@@ -219,6 +220,7 @@ export default {
           this.$root.hideLoading()
 
           let data = response.data.ReturnData;
+          that.goodsSuggestion = data.Dimensions;
           that.dietSuggestion = data.DietAdvice;
           that.dietSuggestionDetail = data.DietAdviseDetail;
           that.sportSuggestion = data.SportAdvice;
@@ -465,7 +467,8 @@ export default {
   height: 30px;
 }
 .button-box div p {
-  padding-left: 10%;
+  padding-left: 5%;
+  font-size: 0.38rem;
 }
 
 div#suggetion-titles-box ul {
