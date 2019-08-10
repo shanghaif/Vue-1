@@ -83,7 +83,7 @@ export default {
       }
 
       if(index === 2) {
-        this.$root.actionToNative('gotoOuterSiteURL', '部位自诊', window.location.host+'/static/selfBodyCheck')
+        this.$root.actionToNative('gotoOuterSiteURL', '部位自诊', window.location.host+'/static/selfBodyCheck/index.html')
         // window.location.href = "static/selfBodyCheck"
       } else if(index === 4) {
         const postData ={
