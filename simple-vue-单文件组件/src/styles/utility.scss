@@ -1,0 +1,67 @@
+@function px2rem($px) {
+    $per-rem: 75;
+    $rem: $px / $per-rem;
+
+    @return $rem + rem;
+}
+
+//设置定位位置
+@mixin position-set($set) {
+    $len: length($set);
+
+    //nth() 函数用来指定列表中某个位置的值
+    @if $len >= 1 {
+        top: nth($set, 1);
+    }
+
+    @if $len >= 2 {
+        right: nth($set, 2);
+    }
+
+    @if $len >= 3 {
+        bottom: nth($set, 3);
+    }
+
+    @if $len >= 4 {
+        left: nth($set, 4);
+    }
+}
+
+@mixin layout-absolute($set:auto auto auto auto, $zIndex: 2) {
+    position: absolute;
+    @include position-set($set);
+    z-index: $zIndex;
+}
+
+@mixin layout-fixed($set:auto auto auto auto, $zIndex: 2) {
+    position: fixed;
+    @include position-set($set);
+    z-index: $zIndex;
+}
+
+//字体
+$font-size-small: px2rem(30);
+$font-size-base: px2rem(36);
+$font-size-medium: px2rem(40);
+$font-size-big: px2rem(48);
+
+//文字颜色
+$text-body-primary: #666;
+$text-body-second: #333;
+
+$text-mute: #9f9f9f;
+
+.clearfix {
+    &:before,
+    &:after {
+        content: " ";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+.vertical-top {
+    vertical-align: top !important;
+}
