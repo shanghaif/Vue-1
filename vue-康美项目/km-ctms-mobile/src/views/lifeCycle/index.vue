@@ -2,10 +2,10 @@
     <div class="page-section normal-page-box life-cycle-section clearfix" v-if="loadComplete && data">
         <div class="current-cycle font-size-medium">
             <p class="clearfix">
-                <span class="text-mute">您目前处于生命周期</span><span class="mrg-l text-primary-second font-size-large" v-html="data.Period"></span>
+                <span class="text-mute">您目前处于生命周期</span><span class="mrg-l text-primary-second font-size-large" v-html="pageData.period"></span>
             </p>
 
-            <p class="text-body-second"><span v-html="$utils.getMapText(genderMap, data.Sex)"></span><span class="mrg-l-md">{{data.Age}}岁</span></p>
+            <p class="text-body-second"><span v-html="$utils.getMapText(genderMap, data.Sex) || '女'"></span><span class="mrg-l-md">{{pageData.age}}{{pageData.unit}}</span></p>
         </div>
 
         <div class="questions-wrap">
@@ -27,6 +27,8 @@
                         <div class="swiper-slide">
                             <div class="switch-tab-body">
                                 <p class="mrg-b" v-html="data.PhysicalExamination"></p>
+
+                                <p class="mrg-b" v-for="item in indexGroupDiseases" v-html="item.IndexGroupName"></p>
 
                                 <div class="clearfix">
                                     <a class="font-size-medium text-primary-second" href="javascript:" @click="gotoDoctorOnline">#健康咨询#</a>
@@ -73,6 +75,8 @@
                 tab,
                 loadComplete: false, //是否已加载
                 currentTabIndex: 0, // 当前标签
+                pageData: {},
+                indexGroupDiseases: [],
                 data: null
             }
         },
@@ -82,6 +86,18 @@
             },
             vaccine() {
                 return this.getSplit(this.data.Vaccine);
+            },
+            month() {
+                return this.$route.query.month;
+            },
+            week() {
+                return this.$route.query.week;
+            },
+            age() {
+                return this.$route.query.age;
+            },
+            gender() {
+                return this.$route.query.gender;
             }
         },
         components: {},
@@ -173,40 +189,76 @@
 
                 this.$goto(router);
             },
-            //请求数据
-            fetch(json) {
-                let data = {
-                    age: json.Age,
-                    gender: json.Gender,
-                    period: this.$utils.getPeriod(json.Age)
-                };
-
-                let {age, gender} = this.$route.query;
-
-                if(typeof age !== "undefined" && typeof gender !== "undefined") {
-                    data = {
-                        age,
-                        gender,
-                        period: this.$utils.getPeriod(age)
-                    };
-                }
-
-                //data.period = "孕早期";
+            //获取全生命周期管理建议体检建议增加专项检查项目
+            getIndexGroupDiseases(json) {
+                let array = json.HealthProblemItems.map(n => n.HealthTypeCode);
 
                 this.$ajax({
                     type: "get",
                     request: {
-                        name: "getLifeCycleSuggest"
+                        name: "getIndexGroupDiseases"
                     },
-                    data
+                    data: {
+                        healthTypeCode: array.join()
+                    }
                 }).then((res) => {
-                    this.data = res.ReturnData;
+                    this.indexGroupDiseases = res.ReturnData;
                 }).finally(() => {
                     this.loadComplete = true;
 
                     this.$nextTick(() => {
                         this.createSwiper();
                     });
+                });
+            },
+            //请求数据
+            fetch(json) {
+                let data = {
+                    age: json.Age,
+                    gender: json.Gender
+                };
+
+                if(typeof this.age !== "undefined") {
+                    data.age = this.age;
+                }
+
+                if(this.month) {
+                    data.month = this.month;
+                }
+
+                if(this.gender) {
+                    data.gender = this.gender;
+                }
+
+                if(this.week) {
+                    data.week = this.week;
+                }
+
+                let result = this.$utils.getPeriod(data);
+                data = result.data;
+
+                //男为1, 其他为 设为女值2
+                if(this.$utils.getMapKey(genderMap, data.gender) !== "male") {
+                    //这里孕期的时候女的必须要传gender=0才有有数据
+                    if(result.pageData.pregnantPeriod) {
+                        result.data.gender = 0;
+                    } else {
+                        result.data.gender = 2;
+                    }
+                }
+
+                this.pageData = result.pageData;
+
+                this.$ajax({
+                    type: "get",
+                    request: {
+                        name: "getLifeCycleSuggest"
+                    },
+                    data: result.data
+                }).then((res) => {
+                    this.data = res.ReturnData;
+
+                    this.getIndexGroupDiseases(this.data);
                 });
             }
         }

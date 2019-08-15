@@ -2,6 +2,9 @@
  * Created by huangyh(黄永号) on 2019/07/03.
  */
 
+import {MessageBox} from "mint-ui";
+import store from "@/store";
+
 import api from "../apiConfig";
 import notTokenApi from "../apiConfig/not-token-api";
 import sentTokenApi from "../apiConfig/sent-token-api";
@@ -297,11 +300,54 @@ let utils = {
 
         return key;
     },
+    //去登录
+    goLogin() {
+        MessageBox.confirm("你已被登出，可以取消继续留在该页面，或者重新登录", "确定登出", {
+            confirmButtonText: "重新登录",
+            cancelButtonText: "取消",
+            type: "warning"
+        }).then(() => {
+            store.dispatch("FedLogOut").then(() => {
+                // 为了重新实例化vue-router对象 避免bug
+                location.reload();
+            });
+        });
+    },
     //根据年龄获取时期
-    getPeriod(age) {
+    getPeriod({age = 0, month, week, gender}) {
+        let pregnantPeriod = this.getPregnantPeriod(week);
         let str = "";
+        let unit = "岁";
 
-        if(age < 4) {
+        if(typeof age === "string") {
+            age = parseInt(age);
+        }
+
+        if(typeof month === "string") {
+            month = parseInt(month);
+        }
+
+        if(typeof week === "string") {
+            week = parseInt(week);
+        }
+
+        if(age < 3 || typeof month !== "undefined") {
+            let totalMonth = age * 12 + (month || 0);
+
+            if(totalMonth < 36) {
+                age = totalMonth;
+
+                unit = "月";
+            }
+
+            if(totalMonth < 1) {
+                str = "新生儿";
+            } else if(totalMonth < 12) {
+                str = "婴儿期";
+            } else if(totalMonth < 48) {
+                str = "幼儿期";
+            }
+        } else if(age < 4) {
             str = "幼儿期";
         } else if(age < 7) {
             str = "学龄前期";
@@ -311,13 +357,62 @@ let utils = {
             str = "少年期";
         } else if(age < 40) {
             str = "青年期";
-        }  else if(age < 64) {
+        }  else if(age < 65) {
             str = "中年期";
         } else {
             str = "老年期";
         }
 
+        let data = {
+            period: pregnantPeriod ? pregnantPeriod : str,// str,
+            age: pregnantPeriod ? week : age,
+            gender
+        };
+        let pagePeriod = [str];
+
+        if(pregnantPeriod) {
+            pagePeriod.push(pregnantPeriod);
+        }
+
+        let pageData = {
+            pregnantPeriod,
+            period: pagePeriod.join(),
+            age,
+            unit
+        };
+
+        return {
+            pageData,
+            data
+        };
+    },
+    //根据怀孕时间获取孕期
+    getPregnantPeriod(week) {
+        let str = "";
+
+        if(typeof week === "string") {
+            week = parseInt(week);
+
+            if(week < 13) {
+                str = "孕早期";
+            } else if(week < 28) {
+                str = "孕中期";
+            } else {
+                str = "孕晚期";
+            }
+        }
+
         return str;
+    },
+    //档案是否完善
+    checkInfoIsComplete(data) {
+        let result = false;
+
+        if(data.Phone && data.Name && data.Birthdate && (data.Gender || data.Gender == 0)) {
+            result = true;
+        }
+
+        return result;
     }
 };
 
